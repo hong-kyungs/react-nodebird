@@ -34,7 +34,13 @@ const AppLayout = ({ children }) => {
 					{children}
 				</Col>
 				<Col xs={24} md={6}>
-					<a href='https://hong-kyungs.github.io/' rel='noreferer noopener'>
+					{/* 
+					target='_blank'로 새창에서 띄우는데, 이것은 보안위협이 있으므로 반드시 rel='...'을 추가한다.
+					*/}
+					<a
+						href='https://hong-kyungs.github.io/'
+						target='_blank'
+						rel='noreferer noopener'>
 						My Blog
 					</a>
 				</Col>
