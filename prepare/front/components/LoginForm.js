@@ -1,7 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
+import useInput from '../../hooks/useInput';
 
 const ButtonWrapper = styled.div`
 	margin-top: 10px;
@@ -12,16 +14,20 @@ const FormWrapper = styled(Form)`
 `;
 
 const LoginForm = ({ setIsloggedIn }) => {
+	//반복되는 부분 custom hook 만들어주기
+	const [id, onChangeId] = useInput('');
+	const [password, onChangePassword] = useInput('');
+
+	/*
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
-
 	const onChangeId = useCallback((e) => {
 		setId(e.target.value);
 	}, []);
-
 	const onChangePassword = useCallback((e) => {
 		setPassword(e.target.value);
-	}, []);
+	}, []);	
+	*/
 
 	const onSubmitForm = useCallback(() => {
 		console.log(id, password);
@@ -58,6 +64,10 @@ const LoginForm = ({ setIsloggedIn }) => {
 			</ButtonWrapper>
 		</FormWrapper>
 	);
+};
+
+LoginForm.propTypes = {
+	setIsloggedIn: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
