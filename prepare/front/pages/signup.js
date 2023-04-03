@@ -67,11 +67,7 @@ const Signup = () => {
 					<div>
 						<label htmlFor='user-id'>아이디</label>
 						<br />
-						<Input
-							name='user-id'
-							value={id}
-							required
-							onChange={onChangeId}></Input>
+						<Input name='user-id' value={id} required onChange={onChangeId} />
 					</div>
 					<div>
 						<label htmlFor='user-nickname'>닉네임</label>
@@ -80,7 +76,8 @@ const Signup = () => {
 							name='user-nickname'
 							value={nickname}
 							required
-							onChange={onChangeNickname}></Input>
+							onChange={onChangeNickname}
+						/>
 					</div>
 					<div>
 						<label htmlFor='user-password'>비밀번호</label>
@@ -90,7 +87,8 @@ const Signup = () => {
 							type='password'
 							value={password}
 							required
-							onChange={onChangePassword}></Input>
+							onChange={onChangePassword}
+						/>
 					</div>
 					<div>
 						<label htmlFor='user-password-check'>비밀번호체크</label>
@@ -100,7 +98,8 @@ const Signup = () => {
 							type='password'
 							value={passwordCheck}
 							required
-							onChange={onChangePasswordCheck}></Input>
+							onChange={onChangePasswordCheck}
+						/>
 						{passwordError && (
 							<ErrorMessage>비밀번호가 일치하지 않습니다</ErrorMessage>
 						)}
