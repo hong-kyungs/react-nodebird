@@ -4,8 +4,6 @@ import Head from 'next/head';
 import 'antd/dist/antd.css';
 import wrapper from '../store/configureStore';
 
-import wrapper from '../store/configureStore';
-
 const NodeBird = ({ Component }) => {
 	return (
 		<>
@@ -19,7 +17,7 @@ const NodeBird = ({ Component }) => {
 };
 
 NodeBird.PropTypes = {
-	Component: PropTypes.elementType.isrequired,
+	Component: PropTypes.elementType.isRequired,
 };
 
 export default wrapper.withRedux(NodeBird);
