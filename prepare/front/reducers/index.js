@@ -1,3 +1,5 @@
+import { HYDRATE } from 'next-redux-wrapper';
+
 const initialState = {
 	user: {
 		isLoggedIn: false,
@@ -41,6 +43,8 @@ export const logoutAction = () => {
 //리듀서는 이전상태와 액션을 받아서 다음상태를 만들어내는 함수
 const rootReducer = (state = initialState, action) => {
 	switch (action.type) {
+		case HYDRATE:
+			return { ...state, ...action.payload };
 		case 'LOG_IN':
 			return {
 				...state,
@@ -61,6 +65,7 @@ const rootReducer = (state = initialState, action) => {
 					user: null,
 				},
 			};
+		//default return state값이 없으면 return값이 undefined가 된다.
 		default:
 			return state;
 	}
