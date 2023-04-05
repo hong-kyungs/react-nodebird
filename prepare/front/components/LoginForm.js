@@ -1,9 +1,11 @@
 import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
 import useInput from '../../hooks/useInput';
+
+import { loginAction } from '../reducers';
 
 const ButtonWrapper = styled.div`
 	margin-top: 10px;
@@ -13,7 +15,9 @@ const FormWrapper = styled(Form)`
 	padding: 10px;
 `;
 
-const LoginForm = ({ setIsloggedIn }) => {
+const LoginForm = () => {
+	const dispatch = useDispatch();
+
 	//반복되는 부분 custom hook 만들어주기
 	const [id, onChangeId] = useInput('');
 	const [password, onChangePassword] = useInput('');
@@ -31,7 +35,7 @@ const LoginForm = ({ setIsloggedIn }) => {
 
 	const onSubmitForm = useCallback(() => {
 		console.log(id, password);
-		setIsloggedIn(true);
+		dispatch(loginAction({ id, password }));
 	}, [id, password]);
 
 	return (
@@ -64,10 +68,6 @@ const LoginForm = ({ setIsloggedIn }) => {
 			</ButtonWrapper>
 		</FormWrapper>
 	);
-};
-
-LoginForm.propTypes = {
-	setIsloggedIn: PropTypes.func.isRequired,
 };
 
 export default LoginForm;

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Menu, Input, Row, Col } from 'antd';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 import UserProfile from './UserProfile';
 import LoginForm from './LoginForm';
@@ -13,8 +14,7 @@ const SearchInput = styled(Input.Search)`
 `;
 
 const AppLayout = ({ children }) => {
-	//서버없이 로그인 유무를 확인할 수 없으므로, dummy data를 이용한다.
-	const [isLoggedIn, setIsloggedIn] = useState(false);
+	const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 	return (
 		<div>
 			<Menu mode='horizontal'>
@@ -39,11 +39,7 @@ const AppLayout = ({ children }) => {
 			</Menu>
 			<Row gutter={8}>
 				<Col xs={24} md={6}>
-					{isLoggedIn ? (
-						<UserProfile setIsloggedIn={setIsloggedIn} />
-					) : (
-						<LoginForm setIsloggedIn={setIsloggedIn} />
-					)}
+					{isLoggedIn ? <UserProfile /> : <LoginForm />}
 				</Col>
 				<Col xs={24} md={12}>
 					{children}
