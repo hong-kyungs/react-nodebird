@@ -1,3 +1,4 @@
+//_app.js는 페이지들의 공통되는 부분을 처리하는 공간.
 import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
