@@ -32,10 +32,10 @@ export const initialState = {
 					content: '두번째 더미데이터 포스트',
 				},
 			],
-			imagePaths: [],
-			postAdded: false,
 		},
 	],
+	imagePaths: [],
+	postAdded: false,
 };
 
 //게시물 작성하는 action
@@ -61,6 +61,7 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				mainPosts: [dummyPost, ...state.mainPosts],
+				postAdded: true,
 			};
 		default:
 			return state;
