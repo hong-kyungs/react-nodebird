@@ -23,13 +23,13 @@ export const initialState = {
 					User: {
 						nickname: 'nero',
 					},
-					content: '더미테이터 만드는 중',
+					content: '첫번째 댓글입니다.',
 				},
 				{
 					User: {
 						nickname: 'hero',
 					},
-					content: '두번째 더미데이터 포스트',
+					content: '두번째 댓글입니다.',
 				},
 			],
 		},

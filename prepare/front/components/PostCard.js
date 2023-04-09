@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Card, Popover, Button, Avatar } from 'antd';
+import { Card, Popover, Button, Avatar, List, Comment } from 'antd';
 import {
 	EllipsisOutlined,
 	HeartOutlined,
@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import PostImages from './PostImages';
+import CommentForm from './CommentForm';
 
 const PostCard = ({ post }) => {
 	const [liked, setLiked] = useState(false);
@@ -65,8 +66,26 @@ const PostCard = ({ post }) => {
 					description={post.content}
 				/>
 			</Card>
-			{commentFormOpened && <div>댓글부분</div>}
-			{/* <CommentForm /> */}
+			{commentFormOpened && (
+				<div>
+					{/* 댓글은 게시글에 속해있고 어떤 게시글에 달건지 정보가 필요하고,(게시글의 id가 필요하다) 그 아이디를 CommentForm이 받아야 하기 때문에 props로 넘겨준다 */}
+					<CommentForm post={post} />
+					<List
+						header={`${post.Comments.length}개의 댓글`}
+						itemLayout='horizontal'
+						dataSource={post.Comments}
+						renderItem={(item) => (
+							<li>
+								<Comment
+									author={item.User.nickname}
+									avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+									content={item.content}
+								/>
+							</li>
+						)}
+					/>
+				</div>
+			)}
 			{/* <Comments /> */}
 		</div>
 	);

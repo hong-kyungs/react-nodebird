@@ -7,3 +7,15 @@ export default (initialValue = null) => {
 	}, []);
 	return [value, handler];
 };
+
+/*
+	const [id, setId] = useState('');
+	const onChangeId = useCallback((e) => {
+		setId(e.target.value);
+	}, []);
+
+	const [password, setPassword] = useState('');
+	const onChangePassword = useCallback((e) => {
+		setPassword(e.target.value);
+	}, []);	
+	*/
