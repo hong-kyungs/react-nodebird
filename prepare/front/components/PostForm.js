@@ -35,10 +35,10 @@ const PostForm = () => {
 			/>
 			<div>
 				<input type='file' multiple hidden ref={imageInput} />
-				<Button onClick={onClickImageUpload}>이미지 업로드</Button>
 				{/* 이미지 업로드  버튼*/}
+				<Button onClick={onClickImageUpload}>이미지 업로드</Button>
+				{/* 게시글 작성 버튼 */}
 				<Button type='primary' style={{ float: 'right' }} htmlType='submit'>
-					{/* 게시글 작성 버튼 */}
 					짹짹
 				</Button>
 			</div>

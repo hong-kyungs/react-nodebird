@@ -9,13 +9,13 @@ export const initialState = {
 			content: '첫번째 게시글 #해시태그 #익스프레스',
 			Images: [
 				{
-					src: 'https://images.unsplash.com/photo-1614102073832-030967418971?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2938&q=80',
+					src: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTAzMTNfMTEy%2FMDAxNjE1NTY2NzM4NzY2.21mBLoWLO25wbu-I_VWT1E1pscV9Gvfm66TTLAqBa-sg.m96aAYpgdD1BXcxNshXA6iwW-q-GhOWwyT0Bf6xhaVgg.JPEG.applejamn%2F2019-04-05-12-33-25.jpg&type=sc960_832',
 				},
 				{
-					src: 'https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+					src: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzAzMTlfMjQ3%2FMDAxNjc5MTk2MjIxNjUz.tD-toSmNm6MAQepJ1cl0MvbS1e6k9YsYdNBK92BcfRkg.h749vKbUwWxHpNn9Lpsbp97EUOeurJ7DHUWZUJjyCnYg.JPEG.aldus_06%2Fspring-g1f438d858_1920.jpg&type=sc960_832',
 				},
 				{
-					src: 'https://images.unsplash.com/photo-1526344966-89049886b28d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8JUVCJUIyJTlBJUVBJUJEJTgzfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60',
+					src: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMjA0MTJfMTgy%2FMDAxNjQ5NzMyMDM0ODIx.uj-4G5CpQDDJa8vz-cW-zd-RDj8s3ogKJb4JugKi0RUg.UOp-wNa-rXCmMPJ4ISva1uzkfky8H3TB9QFl4ZMqjXYg.JPEG.koter05280%2F0V3B0230333.jpg&type=sc960_832',
 				},
 			],
 			Comments: [
@@ -46,7 +46,7 @@ export const addPost = {
 
 const dummyPost = {
 	id: 2,
-	content: '더미데이터 입니다.',
+	content: '게시글 더미데이터 입니다.',
 	User: {
 		id: 1,
 		nickname: '제로초',
