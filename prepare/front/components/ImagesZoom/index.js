@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Slick from 'react-slick';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
+import { CloseOutlined } from '@ant-design/icons';
 
 const Overlay = styled.div`
 	position: fixed;
@@ -15,7 +16,7 @@ const Overlay = styled.div`
 const Header = styled.header`
 	height: 44px;
 	background: white;
-	postion: relative;
+	position: relative;
 	padding: 0;
 	text-align: center;
 
@@ -25,15 +26,16 @@ const Header = styled.header`
 		color: #333;
 		line-height: 44px;
 	}
+`;
 
-	& button {
-		position: absolute;
-		right: 0;
-		top: 0;
-		padding: 15px;
-		line-height: 14px;
-		cursor: pointer;
-	}
+//antd component를 스타일링 하기 위해서 CloseBtn로 따로 빼줌
+const CloseBtn = styled(CloseOutlined)`
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding: 15px;
+	line-height: 14px;
+	cursor: pointer;
 `;
 
 const SlickWrapper = styled.div`
@@ -51,13 +53,36 @@ const ImgWrapper = styled.div`
 	}
 `;
 
+const Indicator = styled.div`
+	text-align: center;
+
+	& > div {
+		width: 75px;
+		height: 30px;
+		line-height: 30px;
+		border-radius: 15px;
+		background: #313131;
+		display: inline-block;
+		text-align: center;
+		color: white;
+		font-size: 15px;
+	}
+`;
+
+const Global = createGlobalStyle`
+  .slick-slide{
+    display: inline-block;
+  }
+`;
+
 const ImagesZoom = ({ images, onClose }) => {
-	const { currentSlide, setCurrentSlide } = useState(0);
+	const [currentSlide, setCurrentSlide] = useState(0);
 	return (
 		<Overlay>
+			<Global />
 			<Header>
 				<h1>상세이미지</h1>
-				<button onClick={onClose}>X</button>
+				<CloseBtn onClick={onClose}>X</CloseBtn>
 			</Header>
 			<SlickWrapper>
 				<div>
@@ -76,6 +101,11 @@ const ImagesZoom = ({ images, onClose }) => {
 							</ImgWrapper>
 						))}
 					</Slick>
+					<Indicator>
+						<div>
+							{currentSlide + 1} /{images.length}
+						</div>
+					</Indicator>
 				</div>
 			</SlickWrapper>
 		</Overlay>
