@@ -1,4 +1,4 @@
-import { all, fork, take, call, put } from 'redux-saga/effects';
+import { all, fork, call, put, takeLatest, delay } from 'redux-saga/effects';
 import axios from 'axios';
 
 //logInAPI부분은 제너레이터가 아니다.
@@ -8,7 +8,9 @@ function logInAPI(data) {
 }
 function* logIn(action) {
 	try {
-		const result = yield call(logInAPI, action.data);
+		yield delay(1000); // 서버 구현시 없어질 예정
+		// 나중에 서버 만들면 활성화시켜줄 예정
+		// const result = yield call(logInAPI, action.data);
 		yield put({
 			type: 'LOG_IN_SUCCESS',
 			data: result.data,
@@ -58,15 +60,15 @@ function* addPost(action) {
 }
 
 function* WatchLogIn() {
-	yield take('LOG_IN_REQUEST', logIn);
+	yield takeLatest('LOG_IN_REQUEST', logIn);
 }
 
 function* WatchLogOut() {
-	yield take('LOG_OUT_REQUEST', logOut);
+	yield takeLatest('LOG_OUT_REQUEST', logOut);
 }
 
 function* WatchAddPost() {
-	yield take('ADD_POST_REQUEST', addPost);
+	yield takeLatest('ADD_POST_REQUEST', addPost);
 }
 
 export default function* rootSaga() {
