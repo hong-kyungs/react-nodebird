@@ -27,7 +27,7 @@ const Global = createGlobalStyle`
 `;
 
 const AppLayout = ({ children }) => {
-	const { logInDone } = useSelector((state) => state.user);
+	const { me } = useSelector((state) => state.user);
 	return (
 		<div>
 			<Global />
@@ -53,7 +53,8 @@ const AppLayout = ({ children }) => {
 			</Menu>
 			<Row gutter={8}>
 				<Col xs={24} md={6}>
-					{logInDone ? <UserProfile /> : <LoginForm />}
+					{/* me, 내정보가 있으면 UserProfile, 없으면 LoginForm */}
+					{me ? <UserProfile /> : <LoginForm />}
 				</Col>
 				<Col xs={24} md={12}>
 					{children}

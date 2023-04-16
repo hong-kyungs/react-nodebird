@@ -9,6 +9,9 @@ export const initialState = {
 	logOutLoading: false, //로그아웃 시도중
 	logOutDone: false,
 	logOutError: null,
+	signUpLoading: false, //회원가입 시도중
+	signUpDone: false,
+	signUpError: null,
 	me: null,
 	signUpData: {},
 	loginData: {},
