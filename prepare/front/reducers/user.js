@@ -44,13 +44,24 @@ export const CHANGE_NICKNAME_REQUEST = 'CHANGE_NICKNAME_REQUEST';
 export const CHANGE_NICKNAME_SUCCESS = 'CHANGE_NICKNAME_SUCCESS';
 export const CHANGE_NICKNAME_FAILURE = 'CHANGE_NICKNAME_FAILURE';
 
+export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
+export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
+
 const dummyUser = (data) => ({
 	...data, // 이메일과 비밀번호가 들어옴
 	nickname: 'JennyCho',
 	id: 1,
-	Posts: [],
-	Followings: [],
-	Followers: [],
+	Posts: [{ id: 1 }],
+	Followings: [
+		{ nickname: 'Soo' },
+		{ nickname: 'Jimin' },
+		{ nickname: 'Justin' },
+	],
+	Followers: [
+		{ nickname: 'Soo' },
+		{ nickname: 'Jimin' },
+		{ nickname: 'Justin' },
+	],
 });
 //action creator
 export const loginRequestAction = (data) => {
@@ -151,6 +162,23 @@ const reducer = (state = initialState, action) => {
 				...state,
 				changeNicknameLoading: false,
 				changeNicknameError: action.error,
+			};
+		case ADD_POST_TO_ME:
+			return {
+				...state,
+				me: {
+					...state.me,
+					Posts: [{ id: action.data }, ...state.me.Posts],
+				},
+			};
+		case REMOVE_POST_OF_ME:
+			return {
+				...state,
+				me: {
+					...state.me,
+					//filter로 id값이 같지 않으면 남겨두고, 같으면 지운다.
+					Posts: state.me.Posts.filter((v) => v.id !== action.data),
+				},
 			};
 		default:
 			return state;
