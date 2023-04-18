@@ -12,6 +12,9 @@ export const initialState = {
 	signUpLoading: false, //회원가입 시도중
 	signUpDone: false,
 	signUpError: null,
+	changeNicknameLoading: false,
+	changeNicknameDone: false,
+	changeNicknameError: null,
 	me: null,
 	signUpData: {},
 	loginData: {},
@@ -36,6 +39,10 @@ export const FOLLOW_FAILURE = 'FOLLOW_FAILURE';
 export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST';
 export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS';
 export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
+
+export const CHANGE_NICKNAME_REQUEST = 'CHANGE_NICKNAME_REQUEST';
+export const CHANGE_NICKNAME_SUCCESS = 'CHANGE_NICKNAME_SUCCESS';
+export const CHANGE_NICKNAME_FAILURE = 'CHANGE_NICKNAME_FAILURE';
 
 const dummyUser = (data) => ({
 	...data, // 이메일과 비밀번호가 들어옴
@@ -124,6 +131,26 @@ const reducer = (state = initialState, action) => {
 				...state,
 				signUpLoading: false,
 				signUpError: action.error,
+			};
+
+		case CHANGE_NICKNAME_REQUEST:
+			return {
+				...state,
+				changeNicknameLoading: true,
+				changeNicknameDone: false,
+				changeNicknameError: null,
+			};
+		case CHANGE_NICKNAME_SUCCESS:
+			return {
+				...state,
+				changeNicknameLoading: false,
+				changeNicknameDone: true,
+			};
+		case CHANGE_NICKNAME_FAILURE:
+			return {
+				...state,
+				changeNicknameLoading: false,
+				changeNicknameError: action.error,
 			};
 		default:
 			return state;
