@@ -1,6 +1,9 @@
 import { all, fork, put, takeLatest, delay } from 'redux-saga/effects';
 import axios from 'axios';
 import {
+	LOAD_POSTS_REQUEST,
+	LOAD_POSTS_SUCCESS,
+	LOAD_POSTS_FAILURE,
 	ADD_POST_REQUEST,
 	ADD_POST_SUCCESS,
 	ADD_POST_FAILURE,
@@ -13,6 +16,25 @@ import {
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 import shortid from 'shortid';
+
+function loadPostsAPI(data) {
+	return axios.get('/apl/post', data);
+}
+function* loadPosts(action) {
+	try {
+		yield delay(1000);
+		// const result = yield call(addPostAPI, action.data);
+		yield put({
+			type: LOAD_POSTS_SUCCESS,
+			data: generateDummyPost(10),
+		});
+	} catch (err) {
+		yield put({
+			type: LOAD_POSTS_FAILURE,
+			data: err.response.data,
+		});
+	}
+}
 
 function addPostAPI(data) {
 	return axios.post('/apl/post', data);
@@ -83,6 +105,10 @@ function* addComment(action) {
 	}
 }
 
+function* WatchLoadPosts() {
+	yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
+}
+
 function* WatchAddPost() {
 	yield takeLatest(ADD_POST_REQUEST, addPost);
 }
@@ -96,5 +122,10 @@ function* WatchAddComment() {
 }
 
 export default function* postSaga() {
-	yield all([fork(WatchAddPost), fork(WatchRemovePost), fork(WatchAddComment)]);
+	yield all([
+		fork(WatchLoadPosts),
+		fork(WatchAddPost),
+		fork(WatchRemovePost),
+		fork(WatchAddComment),
+	]);
 }
