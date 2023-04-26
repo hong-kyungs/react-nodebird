@@ -25,6 +25,12 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 
-	User.associate = (db) => {};
+	User.associate = (db) => {
+		db.User.hasMany(db.Post);
+		db.User.hasMany(db.Comment);
+		//through로 중간테이블 이름을 정하고, as로 별칭을 붙여서 구분한다.
+		//Liked가 있으면 내가 좋아요를 누른 게시글들
+		db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked' });
+	};
 	return User;
 };
