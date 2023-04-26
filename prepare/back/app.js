@@ -19,13 +19,7 @@ app.get('/posts', (req, res) => {
 	]);
 });
 
-app.post('/post', (req, res) => {
-	res.json({ id: 1, content: 'Hello' });
-});
-
-app.delete('/post', (req, res) => {
-	res.json({ id: 1 });
-});
+app.use('/post', postRouter);
 
 app.listen(3065, () => {
 	console.log('서버 실행 중');
