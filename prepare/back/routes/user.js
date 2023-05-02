@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 
 router.post('/', async (req, res, next) => {
+	// POST/ user/
 	try {
 		const exUser = await User.findOne({
 			where: {
@@ -20,7 +21,7 @@ router.post('/', async (req, res, next) => {
 			nickname: req.body.nickname,
 			password: hashedPassword,
 		});
-		res.send('ok');
+		res.status(200).send('ok');
 	} catch (error) {
 		console.error(error);
 		next(error);

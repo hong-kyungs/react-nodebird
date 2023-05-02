@@ -1,11 +1,13 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import AppLayout from '../components/AppLayout';
 import Head from 'next/head';
 import { Checkbox, Form, Input, Button } from 'antd';
 import styled from 'styled-components';
+import Router from 'next/router';
 
 import useInput from '../../hooks/useInput';
 import { useDispatch, useSelector } from 'react-redux';
+import { SIGN_UP_FAILURE, SIGN_UP_REQUEST } from '../reducers/user';
 
 const ErrorMessage = styled.div`
 	color: red;
@@ -13,7 +15,22 @@ const ErrorMessage = styled.div`
 
 const Signup = () => {
 	const dispatch = useDispatch();
-	const { signUpLoading } = useSelector((state) => state.user);
+	const { signUpLoading, signUpDone, signUpError } = useSelector(
+		(state) => state.user
+	);
+
+	useEffect(() => {
+		if (signUpDone) {
+			//회원가입이 성공하면 메인페이지로 보내기
+			Router.push('/');
+		}
+	}, [signUpDone]);
+
+	useEffect(() => {
+		if (signUpError) {
+			alert(signUpError);
+		}
+	}, [signUpError]);
 
 	const [email, onChangeEmail] = useInput('');
 	const [nickname, onChangeNickname] = useInput('');

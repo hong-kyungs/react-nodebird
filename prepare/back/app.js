@@ -1,4 +1,6 @@
 const express = require('express');
+const cors = require('cors');
+
 const postRouter = require('./routes/post');
 const userRouter = require('./routes/user');
 const db = require('./models');
@@ -11,6 +13,13 @@ db.sequelize
 	})
 	.catch(console.error);
 
+app.use(
+	cors({
+		//*로 모두 다 허용해줬지만 실무에서는 실제로 요청이 허용될 주소를 넣어준다.
+		origin: '*',
+		credentials: false,
+	})
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
