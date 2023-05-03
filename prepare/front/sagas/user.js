@@ -21,17 +21,14 @@ import {
 //logInAPI부분은 제너레이터가 아니다.
 function logInAPI(data) {
 	//이런한 코드를 사용해서 서버에 요청을 보낸다.
-	return axios.post('/apl/login', data);
+	return axios.post('/user/login', data);
 }
 function* logIn(action) {
 	try {
-		console.log('saga login');
-		yield delay(1000); // 서버 구현시 없어질 예정
-		// 나중에 서버 만들면 활성화시켜줄 예정
-		// const result = yield call(logInAPI, action.data);
+		const result = yield call(logInAPI, action.data);
 		yield put({
 			type: LOG_IN_SUCCESS,
-			data: action.data,
+			data: result.data,
 		});
 	} catch (err) {
 		yield put({
@@ -42,7 +39,7 @@ function* logIn(action) {
 }
 
 function logOutAPI() {
-	return axios.post('/apl/logout');
+	return axios.post('/user/logout');
 }
 function* logOut(action) {
 	try {
@@ -99,7 +96,7 @@ function* unfollow(action) {
 }
 
 function signUpAPI(data) {
-	return axios.post('http://localhost:3065/user', data);
+	return axios.post('/user', data);
 }
 function* signUp(action) {
 	try {
