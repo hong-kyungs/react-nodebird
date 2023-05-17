@@ -5,9 +5,10 @@ const passport = require('passport');
 
 const router = express.Router();
 
-//local - done이 콜백같은 거라서 done이 가진 인자들이 전달된다
-//(서버에러, 성공객체, 클라이언트에러) = (err, user, info)
+//로그인 라우터
 router.post('/login', (req, res, next) => {
+	//local - done이 콜백같은 거라서 done이 가진 인자들이 전달된다
+	//(서버에러, 성공객체, 클라이언트에러) = (err, user, info)
 	passport.authenticate('local', (err, user, info) => {
 		//서버쪽 에러
 		if (err) {
@@ -26,7 +27,8 @@ router.post('/login', (req, res, next) => {
 				return next(loginErr);
 			}
 			//여기까지 에러가 없으면 사용자 정보를 프론트로 넘겨주기
-			return res.json(user);
+			//로그인시 cookie가 res.setHeader('Cookie', 'cxlhy') 와 같은 형식으로 보내준다.
+			return res.status(200).json(user);
 		});
 	})(req, res, next);
 });
@@ -53,6 +55,13 @@ router.post('/', async (req, res, next) => {
 		console.error(error);
 		next(error);
 	}
+});
+
+//로그아웃 라우터
+router.post('/user/logout', (req, res, next) => {
+	req.logout();
+	req.session.destroy();
+	res.send('ok');
 });
 
 module.exports = router;
