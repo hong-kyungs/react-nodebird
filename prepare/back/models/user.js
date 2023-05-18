@@ -31,6 +31,17 @@ module.exports = (sequelize, DataTypes) => {
 		//through로 중간테이블 이름을 정하고, as로 별칭을 붙여서 구분한다.
 		//Liked가 있으면 내가 좋아요를 누른 게시글들
 		db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked' });
+		//foreignkey로 key이름을 바꿔준다.
+		db.User.belongsToMany(db.User, {
+			through: 'Follow',
+			as: 'Followers',
+			foreignkey: 'FollowingId',
+		});
+		db.User.belongsToMany(db.User, {
+			through: 'Follow',
+			as: 'Followings',
+			foreignkey: 'FollowerId',
+		});
 	};
 	return User;
 };

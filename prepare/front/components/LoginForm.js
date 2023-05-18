@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
@@ -17,11 +17,17 @@ const FormWrapper = styled(Form)`
 
 const LoginForm = () => {
 	const dispatch = useDispatch();
-	const { logInLoading } = useSelector((state) => state.user);
+	const { logInLoading, logInError } = useSelector((state) => state.user);
 
 	//반복되는 부분 custom hook 만들어주기
 	const [email, onChangeEmail] = useInput('');
 	const [password, onChangePassword] = useInput('');
+
+	useEffect(() => {
+		if (logInError) {
+			alert(logInError);
+		}
+	}, [logInError]);
 
 	/*
 	const [id, setId] = useState('');

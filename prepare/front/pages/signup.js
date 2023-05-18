@@ -15,14 +15,21 @@ const ErrorMessage = styled.div`
 
 const Signup = () => {
 	const dispatch = useDispatch();
-	const { signUpLoading, signUpDone, signUpError } = useSelector(
+	const { signUpLoading, signUpDone, signUpError, me } = useSelector(
 		(state) => state.user
 	);
+
+	//로그인에 성공하면 회원가입 페이지에서 나가기
+	useEffect(() => {
+		if (me && me.id) {
+			Router.replace('/');
+		}
+	}, [me && me.id]);
 
 	useEffect(() => {
 		if (signUpDone) {
 			//회원가입이 성공하면 메인페이지로 보내기
-			Router.push('/');
+			Router.replace('/');
 		}
 	}, [signUpDone]);
 

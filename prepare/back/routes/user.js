@@ -1,5 +1,5 @@
 const express = require('express');
-const { User } = require('../models');
+const { User, Post } = require('../models');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
@@ -15,7 +15,7 @@ router.post('/login', (req, res, next) => {
 			console.error(err);
 			return next(err);
 		}
-		//클라이언트 에러가 있으면
+		//클라이언트 에러가 있으면 - 로그인 실패하면
 		if (info) {
 			return res.status(401).send(info.reason);
 		}
@@ -26,9 +26,29 @@ router.post('/login', (req, res, next) => {
 				console.error(loginErr);
 				return next(loginErr);
 			}
+			//원래 있는 사용자 정보를 다시 가져와서 부족한 부분 추가
+			const fullUserWithoutPassword = await User.findOne({
+				where: { id: user.id },
+				attributes: {
+					exclude: ['password'],
+				},
+				include: [
+					{
+						model: Post,
+					},
+					{
+						model: User,
+						as: 'Followers',
+					},
+					{
+						model: User,
+						as: 'Followings',
+					},
+				],
+			});
 			//여기까지 에러가 없으면 사용자 정보를 프론트로 넘겨주기
 			//로그인시 cookie가 res.setHeader('Cookie', 'cxlhy') 와 같은 형식으로 보내준다.
-			return res.status(200).json(user);
+			return res.status(200).json(fullUserWithoutPassword);
 		});
 	})(req, res, next);
 });
