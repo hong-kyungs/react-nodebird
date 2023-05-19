@@ -17,7 +17,7 @@ module.exports = () => {
 					});
 					//이메일이 존재하지 않으면
 					if (!user) {
-						return done(none, false, { reason: '존재하지 않는 이메일입니다.' });
+						return done(null, false, { reason: '존재하지 않는 이메일입니다.' });
 					}
 					//이메일이 존재하면 비밀번호 비교하기
 					const result = await bcrypt.compare(password, user.password);

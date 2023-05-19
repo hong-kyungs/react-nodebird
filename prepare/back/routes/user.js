@@ -1,12 +1,14 @@
 const express = require('express');
-const { User, Post } = require('../models');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
+
+const { User, Post } = require('../models');
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
 //로그인 라우터
-router.post('/login', (req, res, next) => {
+router.post('/login', isNotLoggedIn, (req, res, next) => {
 	//local - done이 콜백같은 거라서 done이 가진 인자들이 전달된다
 	//(서버에러, 성공객체, 클라이언트에러) = (err, user, info)
 	passport.authenticate('local', (err, user, info) => {
@@ -53,7 +55,8 @@ router.post('/login', (req, res, next) => {
 	})(req, res, next);
 });
 
-router.post('/', async (req, res, next) => {
+//회원가입 라우터
+router.post('/', isNotLoggedIn, async (req, res, next) => {
 	// POST/ user/
 	try {
 		const exUser = await User.findOne({
@@ -78,8 +81,8 @@ router.post('/', async (req, res, next) => {
 });
 
 //로그아웃 라우터
-router.post('/user/logout', (req, res, next) => {
-	req.logout();
+router.post('/logout', isLoggedIn, (req, res, next) => {
+	req.logout(() => {});
 	req.session.destroy();
 	res.send('ok');
 });
