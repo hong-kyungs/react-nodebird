@@ -100,25 +100,25 @@ export const addComment = (data) => ({
 	data,
 });
 
-const dummyPost = (data) => ({
-	id: data.id,
-	content: data.content,
-	User: {
-		id: 1,
-		nickname: '제로초',
-	},
-	Images: [],
-	Comments: [],
-});
+// const dummyPost = (data) => ({
+// 	id: data.id,
+// 	content: data.content,
+// 	User: {
+// 		id: 1,
+// 		nickname: '제로초',
+// 	},
+// 	Images: [],
+// 	Comments: [],
+// });
 
-const dummyComment = (data) => ({
-	id: shortId.generate(),
-	content: data,
-	User: {
-		id: 1,
-		nickname: '제로초',
-	},
-});
+// const dummyComment = (data) => ({
+// 	id: shortId.generate(),
+// 	content: data,
+// 	User: {
+// 		id: 1,
+// 		nickname: '제로초',
+// 	},
+// });
 
 const reducer = (state = initialState, action) => {
 	return produce(state, (draft) => {
@@ -176,8 +176,8 @@ const reducer = (state = initialState, action) => {
 				break;
 			case ADD_COMMENT_SUCCESS:
 				//immer를 써서 코드가 엄청 간단해짐
-				const post = draft.mainPosts.find((v) => v.id === action.data.postId); //게시글찾고
-				post.Comments.unshift(dummyComment(action.data.content)); //댓글추가
+				const post = draft.mainPosts.find((v) => v.id === action.data.PostId); //게시글찾고
+				post.Comments.unshift(action.data.content); //댓글추가
 				draft.addCommentLoading = false;
 				draft.addCommentDone = true;
 				break;
