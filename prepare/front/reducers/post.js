@@ -147,7 +147,7 @@ const reducer = (state = initialState, action) => {
 			case ADD_POST_SUCCESS:
 				draft.addPostLoading = false;
 				draft.addPostDone = true;
-				draft.mainPosts.unshift(dummyPost(action.data));
+				draft.mainPosts.unshift(action.data);
 				break;
 			case ADD_POST_FAILURE:
 				draft.addPostLoading = false;
@@ -177,7 +177,7 @@ const reducer = (state = initialState, action) => {
 			case ADD_COMMENT_SUCCESS:
 				//immer를 써서 코드가 엄청 간단해짐
 				const post = draft.mainPosts.find((v) => v.id === action.data.PostId); //게시글찾고
-				post.Comments.unshift(action.data.content); //댓글추가
+				post.Comments.unshift(action.data); //댓글추가
 				draft.addCommentLoading = false;
 				draft.addCommentDone = true;
 				break;

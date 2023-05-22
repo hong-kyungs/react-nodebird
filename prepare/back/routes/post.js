@@ -1,11 +1,11 @@
 const express = require('express');
 
-const { Post } = require('../models');
+const { Post, Image, Comment, User } = require('../models');
 const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
-// 게시글 작성
+// 게시글 작성 라우터
 // '/post'로 중복되는 부분을 분리
 router.post('/', isLoggedIn, async (req, res, next) => {
 	// '/' 는 실제로는 '/post'다. POST /post
@@ -14,13 +14,28 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 			content: req.body.content,
 			UserId: req.user.id,
 		});
-		res.status(201).json(post);
+		const fullpost = await Post.findOne({
+			where: { id: post.id },
+			include: [
+				{
+					model: Image,
+				},
+				{
+					model: Comment,
+				},
+				{
+					model: User,
+				},
+			],
+		});
+		res.status(201).json(fullpost);
 	} catch (error) {
 		console.error(error);
 		next(error);
 	}
 });
 
+// 댓글 작성 라우터
 router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
 	// POST /post/1/comment
 	try {

@@ -23,8 +23,8 @@ passportConfig();
 app.use(
 	cors({
 		//*로 모두 다 허용해줬지만 실무에서는 실제로 요청이 허용될 주소를 넣어준다.
-		origin: '*',
-		credentials: false,
+		origin: 'http://localhost:3000',
+		credentials: true,
 	})
 );
 app.use(express.json());

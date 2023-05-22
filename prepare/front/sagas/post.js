@@ -87,7 +87,7 @@ function addCommentAPI(data) {
 }
 function* addComment(action) {
 	try {
-		const result = yield call(addPostAPI, action.data);
+		const result = yield call(addCommentAPI, action.data);
 		yield put({
 			type: ADD_COMMENT_SUCCESS,
 			data: result.data,
