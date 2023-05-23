@@ -1,6 +1,9 @@
 import { all, fork, put, takeLatest, delay, call } from 'redux-saga/effects';
 import axios from 'axios';
 import {
+	LOAD_MY_INFO_REQUEST,
+	LOAD_MY_INFO_SUCCESS,
+	LOAD_MY_INFO_FAILURE,
 	LOG_IN_REQUEST,
 	LOG_IN_SUCCESS,
 	LOG_IN_FAILURE,
@@ -17,6 +20,24 @@ import {
 	SIGN_UP_SUCCESS,
 	SIGN_UP_FAILURE,
 } from '../reducers/user';
+
+function loadMyInfoAPI() {
+	return axios.get('/user');
+}
+function* loadMyInfo(action) {
+	try {
+		const result = yield call(loadMyInfoAPI, action.data);
+		yield put({
+			type: LOAD_MY_INFO_SUCCESS,
+			data: result.data,
+		});
+	} catch (err) {
+		yield put({
+			type: LOAD_MY_INFO_FAILURE,
+			error: err.response.data,
+		});
+	}
+}
 
 //logInAPI부분은 제너레이터가 아니다.
 function logInAPI(data) {
@@ -111,6 +132,10 @@ function* signUp(action) {
 	}
 }
 
+function* WatchLoadMyInfo() {
+	yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
+}
+
 function* WatchLogIn() {
 	yield takeLatest(LOG_IN_REQUEST, logIn);
 }
@@ -133,6 +158,7 @@ function* WatchSignUp() {
 
 export default function* userSaga() {
 	yield all([
+		fork(WatchLoadMyInfo),
 		fork(WatchLogIn),
 		fork(WatchLogOut),
 		fork(WatchFollow),

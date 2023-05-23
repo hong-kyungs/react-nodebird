@@ -7,6 +7,43 @@ const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
+//로그인 상태 유지 라우터
+router.get('/', async (req, res, next) => {
+	//GET /user
+	try {
+		if (req.user) {
+			const fullUserWithoutPassword = await User.findOne({
+				where: { id: req.user.id },
+				attributes: {
+					exclude: ['password'],
+				},
+				include: [
+					{
+						model: Post,
+						attributes: ['id'],
+					},
+					{
+						model: User,
+						as: 'Followers',
+						attributes: ['id'],
+					},
+					{
+						model: User,
+						as: 'Followings',
+						attributes: ['id'],
+					},
+				],
+			});
+			res.status(200).json(fullUserWithoutPassword);
+		} else {
+			res.status(200).json(null);
+		}
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+});
+
 //로그인 라우터
 router.post('/login', isNotLoggedIn, (req, res, next) => {
 	//local - done이 콜백같은 거라서 done이 가진 인자들이 전달된다
@@ -37,14 +74,17 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
 				include: [
 					{
 						model: Post,
+						attributes: ['id'],
 					},
 					{
 						model: User,
 						as: 'Followers',
+						attributes: ['id'],
 					},
 					{
 						model: User,
 						as: 'Followings',
+						attributes: ['id'],
 					},
 				],
 			});

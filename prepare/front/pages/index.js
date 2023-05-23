@@ -5,6 +5,7 @@ import AppLayout from '../components/AppLayout';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
+import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 
 const Home = () => {
 	const dispatch = useDispatch();
@@ -12,8 +13,13 @@ const Home = () => {
 	const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
 		(state) => state.post
 	);
-	//화면 초기 로딩 - 화면을 로딩하면 LOAD_POSTS_REQUEST를  바로 호출해준다.
+	//화면 초기 로딩
 	useEffect(() => {
+		//로그인 상태 복구 - 새로고침해도 로그인이 남아있도록
+		dispatch({
+			type: LOAD_MY_INFO_REQUEST,
+		});
+		//화면 초기 로딩 - 화면을 로딩하면 LOAD_POSTS_REQUEST를  바로 호출해준다.
 		dispatch({
 			type: LOAD_POSTS_REQUEST,
 		});
