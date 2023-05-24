@@ -4,8 +4,10 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
 
 const postRouter = require('./routes/post');
+const postsRouter = require('./routes/posts');
 const userRouter = require('./routes/user');
 const db = require('./models');
 const app = express();
@@ -20,6 +22,7 @@ db.sequelize
 
 passportConfig();
 
+app.use(morgan('dev'));
 app.use(
 	cors({
 		//*로 모두 다 허용해줬지만 실무에서는 실제로 요청이 허용될 주소를 넣어준다.
@@ -48,14 +51,7 @@ app.get('/api', (req, res) => {
 	res.send('Hello Api');
 });
 
-app.get('/posts', (req, res) => {
-	res.json([
-		{ id: 1, content: 'Hello' },
-		{ id: 2, content: 'Hello2' },
-		{ id: 3, content: 'Hello3' },
-	]);
-});
-
+app.use('/posts', postsRouter);
 app.use('/post', postRouter);
 app.use('/user', userRouter);
 

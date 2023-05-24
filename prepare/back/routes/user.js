@@ -12,6 +12,7 @@ router.get('/', async (req, res, next) => {
 	//GET /user
 	try {
 		if (req.user) {
+			//req.user가 true면, 즉 로그인 정보가 있다면
 			const fullUserWithoutPassword = await User.findOne({
 				where: { id: req.user.id },
 				attributes: {
@@ -36,6 +37,7 @@ router.get('/', async (req, res, next) => {
 			});
 			res.status(200).json(fullUserWithoutPassword);
 		} else {
+			//로그인 정보가 없으면 아무것도 보내주지 않으면 된다.
 			res.status(200).json(null);
 		}
 	} catch (error) {

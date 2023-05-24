@@ -20,31 +20,32 @@ export const initialState = {
 	addCommentError: null,
 };
 
-export const generateDummyPost = (number) =>
-	Array(number)
-		.fill()
-		.map(() => ({
-			id: shortId.generate(),
-			User: {
-				id: shortId.generate(),
-				nickname: faker.name.findName(),
-			},
-			content: faker.lorem.paragraph(),
-			Images: [
-				{
-					src: faker.image.image(),
-				},
-			],
-			Comments: [
-				{
-					User: {
-						id: shortId.generate(),
-						nickname: faker.name.findName(),
-					},
-					content: faker.lorem.paragraph(),
-				},
-			],
-		}));
+// 실제 서버가 있어서 더이상 더미포스트가 필요 없어짐
+// export const generateDummyPost = (number) =>
+// 	Array(number)
+// 		.fill()
+// 		.map(() => ({
+// 			id: shortId.generate(),
+// 			User: {
+// 				id: shortId.generate(),
+// 				nickname: faker.name.findName(),
+// 			},
+// 			content: faker.lorem.paragraph(),
+// 			Images: [
+// 				{
+// 					src: faker.image.image(),
+// 				},
+// 			],
+// 			Comments: [
+// 				{
+// 					User: {
+// 						id: shortId.generate(),
+// 						nickname: faker.name.findName(),
+// 					},
+// 					content: faker.lorem.paragraph(),
+// 				},
+// 			],
+// 		}));
 
 // initialState.mainPosts = initialState.mainPosts.concat(
 // 	Array(20)
