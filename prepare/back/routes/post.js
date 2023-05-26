@@ -24,14 +24,19 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 					model: Comment,
 					include: [
 						{
-							model: User,
+							model: User, // 댓글 작성자
 							attributes: ['id', 'nickname'],
 						},
 					],
 				},
 				{
-					model: User,
+					model: User, // 게시글 작성자
 					attributes: ['id', 'nickname'],
+				},
+				{
+					model: User, // 좋아요 누른 사람
+					as: 'Likers',
+					attributes: ['id'],
 				},
 			],
 		});
@@ -67,6 +72,44 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
 			],
 		});
 		res.status(201).json(fullComment);
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+});
+
+//좋아요 라우터
+router.patch('/:postId/like', async (req, res, next) => {
+	// PATCH /post/1/like
+	try {
+		//먼저 게시글이 있는지 확인
+		const post = await Post.findOne({ where: { id: req.params.postId } });
+		//게시글이 없으면(게시글이 없는데 좋아요를 누르면)
+		if (!post) {
+			return res.status(403).send('게시글이 존재하지 않습니다.');
+		}
+		//게시글이 있으면
+		await post.addLikers(req.user.id);
+		res.json({ PostId: post.id, UserId: req.user.id });
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+});
+
+//좋아요 취소 라우터
+router.delete('/:postId/like', async (req, res, next) => {
+	//DELETE /post/1/like
+	try {
+		//먼저 게시글이 있는지 확인
+		const post = await Post.findOne({ where: { id: req.params.postId } });
+		//게시글이 없으면(게시글이 없는데 좋아요를 누르면)
+		if (!post) {
+			return res.status(403).send('게시글이 존재하지 않습니다.');
+		}
+		//게시글이 있으면
+		await post.removeLikers(req.user.id);
+		res.json({ PostId: post.id, UserId: req.user.id });
 	} catch (error) {
 		console.error(error);
 		next(error);
