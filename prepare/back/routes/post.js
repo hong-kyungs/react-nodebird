@@ -79,7 +79,7 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
 });
 
 //좋아요 라우터
-router.patch('/:postId/like', async (req, res, next) => {
+router.patch('/:postId/like', isLoggedIn, async (req, res, next) => {
 	// PATCH /post/1/like
 	try {
 		//먼저 게시글이 있는지 확인
@@ -98,7 +98,7 @@ router.patch('/:postId/like', async (req, res, next) => {
 });
 
 //좋아요 취소 라우터
-router.delete('/:postId/like', async (req, res, next) => {
+router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
 	//DELETE /post/1/like
 	try {
 		//먼저 게시글이 있는지 확인
@@ -116,9 +116,19 @@ router.delete('/:postId/like', async (req, res, next) => {
 	}
 });
 
-router.delete('/', (req, res) => {
-	// '/' 는 실제로는 '/post'다. DELETE /post
-	res.json({ id: 1 });
+//게시글 삭제 라우터
+router.delete('/:postId', isLoggedIn, async (req, res, next) => {
+	// '/' 는 실제로는 '/post'다. // DELETE /post/1
+	try {
+		//시퀄라이즈에서 제거할 때는 destroy를 쓴다.
+		await Post.destroy({
+			where: { id: req.params.postId, UserId: req.user.id },
+		});
+		res.json({ PostId: parseInt(req.params.postId, 10) });
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
 });
 
 module.exports = router;

@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 
 const Profile = () => {
 	const me = useSelector((state) => state.user);
+
 	//로그아웃 할 경우 - 메인페이지로 보내기
 	useEffect(() => {
 		if (!(me && me.id)) {
@@ -27,8 +28,8 @@ const Profile = () => {
 			</Head>
 			<AppLayout>
 				<NicknameEditForm />
-				<FollowList header='팔로잉 목록' data={me.Followings} />
-				<FollowList header='팔로워 목록' data={me.Followers} />
+				<FollowList header='팔로잉' data={me.Followings} />
+				<FollowList header='팔로워' data={me.Followers} />
 			</AppLayout>
 		</>
 	);
