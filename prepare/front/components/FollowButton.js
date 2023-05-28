@@ -9,6 +9,7 @@ const FollowButton = ({ post }) => {
 	const { me, followLoading, unfollowLoading } = useSelector(
 		(state) => state.user
 	);
+
 	//팔로잉 여부 파악
 	const isFollowing = me?.Followings.find((v) => v.id === post.User.id);
 	const onClickButton = useCallback(() => {
@@ -24,6 +25,11 @@ const FollowButton = ({ post }) => {
 			});
 		}
 	}, [isFollowing]);
+
+	//내 게시물에는 팔로우버튼 안보이게하기
+	if (post.User.id === me.id) {
+		return null;
+	}
 
 	return (
 		<Button loading={followLoading || unfollowLoading} onClick={onClickButton}>

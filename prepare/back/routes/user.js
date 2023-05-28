@@ -125,12 +125,12 @@ router.post('/', isNotLoggedIn, async (req, res, next) => {
 //로그아웃 라우터
 router.post('/logout', isLoggedIn, (req, res, next) => {
 	req.logout(() => {});
-	req.session.destroy();
+	// req.session.destroy();
 	res.send('ok');
 });
 
 //닉네임 수정 라우터
-router.patch('nickname', isLoggedIn, async (req, res, next) => {
+router.patch('/nickname', isLoggedIn, async (req, res, next) => {
 	try {
 		await User.update(
 			{

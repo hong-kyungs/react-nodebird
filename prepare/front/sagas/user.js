@@ -25,7 +25,7 @@ import {
 } from '../reducers/user';
 
 function changeNicknameAPI(data) {
-	return axios.get('/user/nickname', { nickname: data });
+	return axios.patch('/user/nickname', { nickname: data });
 }
 function* changeNickname(action) {
 	try {
