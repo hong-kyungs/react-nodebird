@@ -1,6 +1,12 @@
 import { all, fork, put, takeLatest, delay, call } from 'redux-saga/effects';
 import axios from 'axios';
 import {
+	LOAD_FOLLOWERS_REQUEST,
+	LOAD_FOLLOWERS_SUCCESS,
+	LOAD_FOLLOWERS_FAILURE,
+	LOAD_FOLLOWINGS_REQUEST,
+	LOAD_FOLLOWINGS_SUCCESS,
+	LOAD_FOLLOWINGS_FAILURE,
 	CHANGE_NICKNAME_REQUEST,
 	CHANGE_NICKNAME_SUCCESS,
 	CHANGE_NICKNAME_FAILURE,
@@ -23,6 +29,42 @@ import {
 	SIGN_UP_SUCCESS,
 	SIGN_UP_FAILURE,
 } from '../reducers/user';
+
+function loadFollowersAPI(data) {
+	return axios.get('/user/followers', data);
+}
+function* loadFollowers(action) {
+	try {
+		const result = yield call(loadFollowersAPI, action.data);
+		yield put({
+			type: LOAD_FOLLOWERS_SUCCESS,
+			data: result.data,
+		});
+	} catch (err) {
+		yield put({
+			type: LOAD_FOLLOWERS_FAILURE,
+			error: err.response.data,
+		});
+	}
+}
+
+function loadFollowingsAPI(data) {
+	return axios.get('/user/followings', data);
+}
+function* loadFollowings(action) {
+	try {
+		const result = yield call(loadFollowingsAPI, action.data);
+		yield put({
+			type: LOAD_FOLLOWINGS_SUCCESS,
+			data: result.data,
+		});
+	} catch (err) {
+		yield put({
+			type: LOAD_FOLLOWINGS_FAILURE,
+			error: err.response.data,
+		});
+	}
+}
 
 function changeNicknameAPI(data) {
 	return axios.patch('/user/nickname', { nickname: data });
@@ -97,16 +139,15 @@ function* logOut(action) {
 	}
 }
 
-function followAPI() {
-	return axios.post('/apl/follow');
+function followAPI(data) {
+	return axios.patch(`/user/${data}/follow`);
 }
 function* follow(action) {
 	try {
-		yield delay(1000);
-		// const result = yield call(followAPI);
+		const result = yield call(followAPI, action.data);
 		yield put({
 			type: FOLLOW_SUCCESS,
-			data: action.data,
+			data: result.data,
 		});
 	} catch (err) {
 		yield put({
@@ -116,16 +157,15 @@ function* follow(action) {
 	}
 }
 
-function unfollowAPI() {
-	return axios.post('/apl/unfollow');
+function unfollowAPI(data) {
+	return axios.delete(`/user/${data}/follow`);
 }
 function* unfollow(action) {
 	try {
-		yield delay(1000);
-		// const result = yield call(unfollowAPI);
+		const result = yield call(unfollowAPI, action.data);
 		yield put({
 			type: UNFOLLOW_SUCCESS,
-			data: action.data,
+			data: result.data,
 		});
 	} catch (err) {
 		yield put({
@@ -151,6 +191,14 @@ function* signUp(action) {
 			error: err.response.data,
 		});
 	}
+}
+
+function* WatchLoadFollowers() {
+	yield takeLatest(LOAD_FOLLOWERS_REQUEST, loadFollowers);
+}
+
+function* WatchLoadFollowings() {
+	yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
 }
 
 function* WatchChangeNickname() {
@@ -183,6 +231,8 @@ function* WatchSignUp() {
 
 export default function* userSaga() {
 	yield all([
+		fork(WatchLoadFollowers),
+		fork(WatchLoadFollowings),
 		fork(WatchChangeNickname),
 		fork(WatchLoadMyInfo),
 		fork(WatchLogIn),

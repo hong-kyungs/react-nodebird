@@ -5,17 +5,32 @@ import Router from 'next/router';
 import AppLayout from '../components/AppLayout';
 import NicknameEditForm from '../components/NicknameEditForm';
 import FollowList from '../components/FollowList';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	LOAD_FOLLOWERS_REQUEST,
+	LOAD_FOLLOWINGS_REQUEST,
+} from '../reducers/user';
 
 const Profile = () => {
+	const dispatch = useDispatch();
 	const me = useSelector((state) => state.user);
 
+	useEffect(() => {
+		dispatch({
+			type: LOAD_FOLLOWERS_REQUEST,
+		});
+		dispatch({
+			type: LOAD_FOLLOWINGS_REQUEST,
+		});
+	}, []);
+
 	//로그아웃 할 경우 - 메인페이지로 보내기
-	// useEffect(() => {
-	// 	if (!(me && me.id)) {
-	// 		Router.push('/');
-	// 	}
-	// }, [me && me.id]);
+	useEffect(() => {
+		if (!(me && me.id)) {
+			// Router.push('/');
+			return null;
+		}
+	}, [me && me.id]);
 
 	//로그인 하지 않으면, 프로필에 아무일도 일어나지 않게하기
 	if (!me) {
