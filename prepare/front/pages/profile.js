@@ -15,6 +15,7 @@ const Profile = () => {
 	const dispatch = useDispatch();
 	const { me } = useSelector((state) => state.user);
 
+	//프로필 페이지로 이동시 바로 팔로우, 팔로잉 목록 불러오기
 	useEffect(() => {
 		dispatch({
 			type: LOAD_FOLLOWERS_REQUEST,

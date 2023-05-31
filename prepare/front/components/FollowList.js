@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 const FollowList = ({ header, data }) => {
 	const dispatch = useDispatch();
 
-	//반복문 데이터는 함수로 보낼때는 고차함수를 사용, item.id가 id자리에 들어간다.
+	//반복문데 대한 데이터는 함수로 보낼때는 고차함수를 사용, item.id가 id자리에 들어간다.
 	const onCancel = (id) => () => {
 		//팔로잉 카테고리에서 클리되면 언팔로우, 팔로워에서 클릭되면 팔로워 차단(삭제)
 		if (header === '팔로잉') {
