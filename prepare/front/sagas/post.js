@@ -1,6 +1,9 @@
 import { all, fork, put, takeLatest, delay, call } from 'redux-saga/effects';
 import axios from 'axios';
 import {
+	UPLOAD_IMAGES_REQUEST,
+	UPLOAD_IMAGES_SUCCESS,
+	UPLOAD_IMAGES_FAILURE,
 	LIKE_POST_REQUEST,
 	LIKE_POST_SUCCESS,
 	LIKE_POST_FAILURE,
@@ -21,6 +24,25 @@ import {
 	ADD_COMMENT_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
+
+function uploadImagesAPI(data) {
+	return axios.post('/post/images', data); //data에 Formdata가 그대로 들어온다
+}
+function* uploadImages(action) {
+	try {
+		const result = yield call(uploadImagesAPI, action.data);
+		yield put({
+			type: UPLOAD_IMAGES_SUCCESS,
+			data: result.data, //백에드 좋아요라우터에서 PostId와 UserId를 받는다
+		});
+	} catch (err) {
+		console.error(err);
+		yield put({
+			type: UPLOAD_IMAGES_FAILURE,
+			data: err.response.data,
+		});
+	}
+}
 
 function likePostAPI(data) {
 	return axios.patch(`/post/${data}/like`);
@@ -144,6 +166,9 @@ function* addComment(action) {
 	}
 }
 
+function* WatchuploadImages() {
+	yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
+}
 function* WatchLikePost() {
 	yield takeLatest(LIKE_POST_REQUEST, likePost);
 }
@@ -169,6 +194,7 @@ function* WatchAddComment() {
 
 export default function* postSaga() {
 	yield all([
+		fork(WatchuploadImages),
 		fork(WatchLikePost),
 		fork(WatchUnlikePost),
 		fork(WatchLoadPosts),

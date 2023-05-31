@@ -30,8 +30,11 @@ app.use(
 		credentials: true,
 	})
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+//프론트에서 백엔드로 데이터를 보낼때 express.json, express.urlencoded 이 두가지 형식만 받는다.
+app.use(express.json()); // 프론트에서 axios로 데이터 보낼때
+app.use(express.urlencoded({ extended: true })); //일반 form submit했을 때, urlencoded 방식으로 받는다.
+
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
 	session({

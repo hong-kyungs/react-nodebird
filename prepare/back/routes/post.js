@@ -1,9 +1,19 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path'); // path는 노드에서 제공
+const fs = require('fs'); //노드에서 파일 시스템을 조작해주는 모듈
 
 const { Post, Image, Comment, User } = require('../models');
 const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
+
+try {
+	fs.accessSync('uploads'); //'uploads'라는 폴더가 있는지 확인하고
+} catch (error) {
+	console.log('uploads 폴더가 없으므로 생성합니다.');
+	fs.mkdirSync('uploads'); //'uploads'라는 폴더 생성
+}
 
 // 게시글 작성 라우터
 // '/post'로 중복되는 부분을 분리
@@ -46,6 +56,37 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 		next(error);
 	}
 });
+
+// form마다 형식이 다르기때문에 multer미들웨어를 사용해서 라우터마다 별도의 세팅을 해줘야한다.
+const upload = multer({
+	//storage는 저장할 곳을 적어준다. 일단 실습할때는 diskStorage로 하드웨어에 저장.
+	//나중에는 하드웨어가 아니라 클라우드에 저장. 나중에 storage 옵션만 s3옵션으로 바꾸면 된다.
+	storage: multer.diskStorage({
+		destination(req, file, done) {
+			done(null, 'uploads'); //'upload'라는 폴더에 저장한다.
+		},
+		//파일명이 중복되면 노드는 기존파일을 덮어씌운다. 먼저 파일을 올리사람이 피해를 볼 수 있다
+		//이를 해결하기 위해 파일명에 업로드 날짜를 추가해줘서 파일명이 중복되는 것을 방지
+		filename(req, file, done) {
+			//ex) 제로초.png 라면,
+			const ext = path.extname(file.originalname); //확장자 추출 -> .png
+			const basename = path.basename(file.originalname, ext); // 파일명 꺼내오기 -> 제로초
+			done(null, basename + new Date().getTime() + ext); //제로초15390285762.png
+		},
+	}),
+	limits: { fileSize: 20 * 1024 * 1024 }, //20MB, 20MB으로 제한
+});
+// 이미지 업로드 라우터
+router.post(
+	'/images',
+	isLoggedIn,
+	upload.array('image'),
+	async (req, res, next) => {
+		//POST /post/images
+		console.log(req.files);
+		res.json(req.files.map((v) => v.filename));
+	}
+);
 
 // 댓글 작성 라우터
 router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
