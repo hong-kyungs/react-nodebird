@@ -2,8 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { List, Button, Card } from 'antd';
 import { StopOutlined } from '@ant-design/icons';
+import { UNFOLLOW_REQUEST, REMOVE_FOLLOWER_REQUEST } from '../reducers/user';
+import { useDispatch } from 'react-redux';
 
 const FollowList = ({ header, data }) => {
+	const dispatch = useDispatch();
+
+	//반복문 데이터는 함수로 보낼때는 고차함수를 사용, item.id가 id자리에 들어간다.
+	const onCancel = (id) => () => {
+		//팔로잉 카테고리에서 클리되면 언팔로우, 팔로워에서 클릭되면 팔로워 차단(삭제)
+		if (header === '팔로잉') {
+			dispatch({
+				type: UNFOLLOW_REQUEST,
+				data: id,
+			});
+		}
+		dispatch({
+			type: REMOVE_FOLLOWER_REQUEST,
+			data: id,
+		});
+	};
 	// 편의상 style을 객채로 코딩해서 다시 전체적으로 다시 리렌더링이 되기 때문에,
 	// styled-components나 useMemo로 최적화를 해줘야한다.
 	return (
@@ -21,7 +39,8 @@ const FollowList = ({ header, data }) => {
 			dataSource={data}
 			renderItem={(item) => (
 				<List.Item style={{ marginTop: 20 }}>
-					<Card actions={[<StopOutlined key='stop' />]}>
+					<Card
+						actions={[<StopOutlined key='stop' onClick={onCancel(item.id)} />]}>
 						<Card.Meta description={item.nickname} />
 					</Card>
 				</List.Item>

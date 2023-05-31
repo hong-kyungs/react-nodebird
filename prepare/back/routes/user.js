@@ -25,12 +25,12 @@ router.get('/', async (req, res, next) => {
 					},
 					{
 						model: User,
-						as: 'Followers',
+						as: 'Followings',
 						attributes: ['id'],
 					},
 					{
 						model: User,
-						as: 'Followings',
+						as: 'Followers',
 						attributes: ['id'],
 					},
 				],
@@ -80,12 +80,12 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
 					},
 					{
 						model: User,
-						as: 'Followers',
+						as: 'Followings',
 						attributes: ['id'],
 					},
 					{
 						model: User,
-						as: 'Followings',
+						as: 'Followers',
 						attributes: ['id'],
 					},
 				],
@@ -123,12 +123,12 @@ router.post('/', isNotLoggedIn, async (req, res, next) => {
 });
 
 //로그아웃 라우터
-router.post('/logout', isLoggedIn, (req, res, next) => {
+router.post('/logout', isLoggedIn, (req, res) => {
 	req.logout(() => {
-		res.send('ok');
+		res.redirect('/');
 	});
 	// req.logout(() => {});
-	// // req.session.destroy();
+	// req.session.destroy();
 	// res.send('ok');
 });
 
@@ -175,6 +175,22 @@ router.delete('/:userId/follow', isLoggedIn, async (req, res, next) => {
 			res.status(403).send('없는 사람을 언팔로우하려고 하시네여?');
 		}
 		await user.removeFollowers(req.user.id);
+		res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+});
+
+//팔로워 차단/삭제 라우터
+router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => {
+	//DELETE /user/follow/1
+	try {
+		const user = await User.findOne({ where: { id: req.params.userId } }); //차단할 사람을 찾고
+		if (!user) {
+			res.status(403).send('없는 사람을 차단하려고 하시네여?');
+		}
+		await user.removeFollowings(req.user.id); //그 차단할 사람에게서 팔로잉을 끊는다. -> 대칭관계이므로 팔로워가 차단된다.
 		res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
 	} catch (error) {
 		console.error(error);

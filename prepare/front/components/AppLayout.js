@@ -30,7 +30,7 @@ const AppLayout = ({ children }) => {
 	const { me } = useSelector((state) => state.user);
 	return (
 		<div>
-			<Global />
+			{/* <Global /> */}
 			<div>
 				<Menu mode='horizontal'>
 					<Menu.Item>

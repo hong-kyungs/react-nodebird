@@ -13,7 +13,7 @@ import {
 
 const Profile = () => {
 	const dispatch = useDispatch();
-	const me = useSelector((state) => state.user);
+	const { me } = useSelector((state) => state.user);
 
 	useEffect(() => {
 		dispatch({
@@ -27,8 +27,7 @@ const Profile = () => {
 	//로그아웃 할 경우 - 메인페이지로 보내기
 	useEffect(() => {
 		if (!(me && me.id)) {
-			// Router.push('/');
-			return null;
+			Router.push('/');
 		}
 	}, [me && me.id]);
 

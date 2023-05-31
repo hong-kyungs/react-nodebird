@@ -1,6 +1,9 @@
-import { all, fork, put, takeLatest, delay, call } from 'redux-saga/effects';
+import { all, fork, put, takeLatest, call } from 'redux-saga/effects';
 import axios from 'axios';
 import {
+	REMOVE_FOLLOWER_REQUEST,
+	REMOVE_FOLLOWER_SUCCESS,
+	REMOVE_FOLLOWER_FAILURE,
 	LOAD_FOLLOWERS_REQUEST,
 	LOAD_FOLLOWERS_SUCCESS,
 	LOAD_FOLLOWERS_FAILURE,
@@ -29,6 +32,24 @@ import {
 	SIGN_UP_SUCCESS,
 	SIGN_UP_FAILURE,
 } from '../reducers/user';
+
+function removeFollowerAPI(data) {
+	return axios.delete(`/user/follower/${data}`); // data에 들어온 아이디로, 몇번 팔로우를 제거한다.
+}
+function* removeFollower(action) {
+	try {
+		const result = yield call(removeFollowerAPI, action.data);
+		yield put({
+			type: REMOVE_FOLLOWER_SUCCESS,
+			data: result.data,
+		});
+	} catch (err) {
+		yield put({
+			type: REMOVE_FOLLOWER_FAILURE,
+			error: err.response.data,
+		});
+	}
+}
 
 function loadFollowersAPI(data) {
 	return axios.get('/user/followers', data);
@@ -193,6 +214,10 @@ function* signUp(action) {
 	}
 }
 
+function* WatchRemoveFollower() {
+	yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower);
+}
+
 function* WatchLoadFollowers() {
 	yield takeLatest(LOAD_FOLLOWERS_REQUEST, loadFollowers);
 }
@@ -231,6 +256,7 @@ function* WatchSignUp() {
 
 export default function* userSaga() {
 	yield all([
+		fork(WatchRemoveFollower),
 		fork(WatchLoadFollowers),
 		fork(WatchLoadFollowings),
 		fork(WatchChangeNickname),
