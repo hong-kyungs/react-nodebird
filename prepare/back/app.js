@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const path = require('path');
 
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
@@ -30,6 +31,8 @@ app.use(
 		credentials: true,
 	})
 );
+
+app.use('/', express.static(path.join(__dirname, 'uploads'))); // 실제주소는 http://localhost:3065/이미지경로, 프론트는 '/'로 접근하기 때문에 서버쪽 폴더구조를 알수가 없게되고 보안에 조금 유리하다.
 
 //프론트에서 백엔드로 데이터를 보낼때 express.json, express.urlencoded 이 두가지 형식만 받는다.
 app.use(express.json()); // 프론트에서 axios로 데이터 보낼때

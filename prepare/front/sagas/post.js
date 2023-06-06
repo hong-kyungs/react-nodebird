@@ -102,7 +102,8 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) {
-	return axios.post('/post', { content: data });
+	//formData는 { formData: data }처럼 묶어주면 안되고 바로 data로 전달해야한다.
+	return axios.post('/post', data);
 }
 function* addPost(action) {
 	try {

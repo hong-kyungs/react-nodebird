@@ -111,6 +111,8 @@ export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
 
+export const REMOVE_IMAGE = 'REMOVE_IMAGE';
+
 //게시물 작성하는 action
 export const addPost = (data) => ({
 	type: ADD_POST_REQUEST,
@@ -145,6 +147,12 @@ export const addComment = (data) => ({
 const reducer = (state = initialState, action) => {
 	return produce(state, (draft) => {
 		switch (action.type) {
+			//서버에서는 보통 이미지를 지우지 않는다. 이미지를 많이 보유하고 있는것은 도움이 될수도 있기 때문에
+			//그랫 업로드된 사진을 제거할때는 서버에는 남아있고 프론트에서만 지워지는 동기액션을 사용
+			case REMOVE_IMAGE:
+				draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
+				break;
+
 			case UPLOAD_IMAGES_REQUEST:
 				draft.uploadImagesLoading = true;
 				draft.uploadImagesDone = false;
@@ -220,6 +228,7 @@ const reducer = (state = initialState, action) => {
 				draft.addPostLoading = false;
 				draft.addPostDone = true;
 				draft.mainPosts.unshift(action.data);
+				draft.imagePaths = [];
 				break;
 			case ADD_POST_FAILURE:
 				draft.addPostLoading = false;

@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPost, UPLOAD_IMAGES_REQUEST } from '../reducers/post';
+import {
+	ADD_POST_REQUEST,
+	UPLOAD_IMAGES_REQUEST,
+	REMOVE_IMAGE,
+} from '../reducers/post';
 import useInput from '../../hooks/useInput';
 
 const PostForm = () => {
@@ -22,10 +26,24 @@ const PostForm = () => {
 		}
 	}, [addPostDone]);
 
+	//게시글을 업로드할때 이미지가 있다면 text뿐만 아니라 이미지경로(imagepath)도 같이 업로드해주기
+	//text만 업로드할때는 dispatch(addPost(text)); -> 텍스트와 이미지 업로드로 바꿔주기
 	const onSubmit = useCallback(() => {
-		dispatch(addPost(text));
-		// setText(''); //게시글을 보냈는데 에러가 났다면, 글이 지워지면 안되기 때문에 여기에 위치하면 안된다.
-	}, [text]);
+		if (!text || !text.trim()) {
+			// 게시글이 없으면 게시글 작성하라고 알려주기
+			return alert('게시글을 작성하세요.');
+		}
+		//이미지가 없는 경우에는 formData를 쓸 필요가 없다.
+		const formData = new FormData();
+		imagePaths.forEach((p) => {
+			formData.append('image', p); //append로 추가
+		});
+		formData.append('content', text);
+		return dispatch({
+			type: ADD_POST_REQUEST,
+			data: formData,
+		});
+	}, [text, imagePaths]);
 
 	const onClickImageUpload = useCallback(() => {
 		imageInput.current.click();
@@ -43,6 +61,16 @@ const PostForm = () => {
 			data: imageFormData,
 		});
 	});
+
+	const onRemoveImage = useCallback(
+		(index) => () => {
+			dispatch({
+				type: REMOVE_IMAGE,
+				data: index,
+			});
+		},
+		[]
+	);
 
 	return (
 		<Form
@@ -72,11 +100,15 @@ const PostForm = () => {
 				</Button>
 			</div>
 			<div>
-				{imagePaths.map((v) => (
+				{imagePaths.map((v, i) => (
 					<div key={v} style={{ display: 'inline-block' }}>
-						<img src={v} style={{ width: '200px' }} alt={v} />
+						<img
+							src={`http://localhost:3065/${v}`}
+							style={{ width: '200px' }}
+							alt={v}
+						/>
 						<div>
-							<Button>제거</Button>
+							<Button onClick={onRemoveImage(i)}>제거</Button>
 						</div>
 					</div>
 				))}

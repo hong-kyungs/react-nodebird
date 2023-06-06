@@ -15,15 +15,49 @@ try {
 	fs.mkdirSync('uploads'); //'uploads'라는 폴더 생성
 }
 
+// form마다 형식이 다르기때문에 multer미들웨어를 사용해서 라우터마다 별도의 세팅을 해줘야한다.
+const upload = multer({
+	//storage는 저장할 곳을 적어준다. 일단 실습할때는 diskStorage로 하드웨어에 저장.
+	//나중에는 하드웨어가 아니라 클라우드에 저장. 나중에 storage 옵션만 s3옵션으로 바꾸면 된다.
+	storage: multer.diskStorage({
+		destination(req, file, done) {
+			done(null, 'uploads'); //'upload'라는 폴더에 저장한다.
+		},
+		//파일명이 중복되면 노드는 기존파일을 덮어씌운다. 먼저 파일을 올리사람이 피해를 볼 수 있다
+		//이를 해결하기 위해 파일명에 업로드 날짜를 추가해줘서 파일명이 중복되는 것을 방지
+		filename(req, file, done) {
+			//ex) 제로초.png 라면,
+			const ext = path.extname(file.originalname); //확장자 추출 -> .png
+			const basename = path.basename(file.originalname, ext); // 파일명 꺼내오기 -> 제로초
+			done(null, basename + '_' + new Date().getTime() + ext); //제로초15390285762.png
+		},
+	}),
+	limits: { fileSize: 20 * 1024 * 1024 }, //20MB, 20MB으로 제한
+});
+
 // 게시글 작성 라우터
 // '/post'로 중복되는 부분을 분리
-router.post('/', isLoggedIn, async (req, res, next) => {
+router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
 	// '/' 는 실제로는 '/post'다. POST /post
 	try {
 		const post = await Post.create({
 			content: req.body.content,
 			UserId: req.user.id,
 		});
+		if (req.body.image) {
+			//req.body.image에 imagePath가 들어간다.
+			if (Array.isArray(req.body.image)) {
+				//이미지를 여러개 올리면 image: [제로초.png, 부기초.png] 와 같이 배열로 들어간다.
+				const images = await Promise.all(
+					req.body.image.map((image) => Image.create({ src: image }))
+				);
+				await post.addImages(images);
+			} else {
+				//이미지를 하나면 올리면 image: 제로초.png 와 같이 배열로 감싸지지 않는다.
+				const image = await Image.create({ src: req.body.image });
+				await post.addImages(image);
+			}
+		}
 		const fullpost = await Post.findOne({
 			where: { id: post.id },
 			include: [
@@ -57,25 +91,6 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 	}
 });
 
-// form마다 형식이 다르기때문에 multer미들웨어를 사용해서 라우터마다 별도의 세팅을 해줘야한다.
-const upload = multer({
-	//storage는 저장할 곳을 적어준다. 일단 실습할때는 diskStorage로 하드웨어에 저장.
-	//나중에는 하드웨어가 아니라 클라우드에 저장. 나중에 storage 옵션만 s3옵션으로 바꾸면 된다.
-	storage: multer.diskStorage({
-		destination(req, file, done) {
-			done(null, 'uploads'); //'upload'라는 폴더에 저장한다.
-		},
-		//파일명이 중복되면 노드는 기존파일을 덮어씌운다. 먼저 파일을 올리사람이 피해를 볼 수 있다
-		//이를 해결하기 위해 파일명에 업로드 날짜를 추가해줘서 파일명이 중복되는 것을 방지
-		filename(req, file, done) {
-			//ex) 제로초.png 라면,
-			const ext = path.extname(file.originalname); //확장자 추출 -> .png
-			const basename = path.basename(file.originalname, ext); // 파일명 꺼내오기 -> 제로초
-			done(null, basename + new Date().getTime() + ext); //제로초15390285762.png
-		},
-	}),
-	limits: { fileSize: 20 * 1024 * 1024 }, //20MB, 20MB으로 제한
-});
 // 이미지 업로드 라우터
 router.post(
 	'/images',
