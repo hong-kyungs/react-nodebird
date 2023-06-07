@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path'); // path는 노드에서 제공
 const fs = require('fs'); //노드에서 파일 시스템을 조작해주는 모듈
 
-const { Post, Image, Comment, User } = require('../models');
+const { Post, Image, Comment, User, Hashtag } = require('../models');
 const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
@@ -44,11 +44,25 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
 			content: req.body.content,
 			UserId: req.user.id,
 		});
+		const hashtags = req.body.content.match(/#[^\s#]+/g);
+		if (hashtags) {
+			const result = await Promise.all(
+				hashtags.map((tag) =>
+					//db에 저장할때 중복을 피하기위해서 #노드라면 #노드가 있는지 확인하고 없으면 등록한다.
+					//findOrCreate(where:{})로 있을 때는 가져오고, 없을 때는 등록한다.
+					//slice(1)로 #를 떼어내고, toLowerCase로 소문자로 db에 저장해 대,소문자로 검색되게 한다.
+					Hashtag.findOrCreate({ where: { name: tag.slice(1).toLowerCase() } })
+				)
+			);
+			//result의 결과가 [[노드, true], [리액트, true]]이라서 배열의 첫번째 노드, 리액트가 추출하기 위해 v[0] 적용
+			await post.addHashtags(result.map((v) => v[0]));
+		}
 		if (req.body.image) {
 			//req.body.image에 imagePath가 들어간다.
 			if (Array.isArray(req.body.image)) {
 				//이미지를 여러개 올리면 image: [제로초.png, 부기초.png] 와 같이 배열로 들어간다.
 				const images = await Promise.all(
+					// Promise.all로 한번에 여러개가 db에 저장된다.
 					req.body.image.map((image) => Image.create({ src: image }))
 				);
 				await post.addImages(images);
@@ -102,6 +116,89 @@ router.post(
 		res.json(req.files.map((v) => v.filename));
 	}
 );
+
+//리트윗 작성 라우터
+router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
+	// POST /post/1/retweet
+	try {
+		const post = await Post.findOne({
+			where: { id: req.params.postId },
+			include: [
+				{
+					model: Post,
+					as: 'Retweet',
+				},
+			],
+		});
+		if (!post) {
+			return res.status(403).send('존재하지 않는 게시글입니다.');
+		}
+		//자기 게시글을 리트윗하는것과, 자기 게시글에 다른사람이 리트윗한것에 내가 리트윗하는 것을 막아준다.
+		if (
+			req.user.id === post.UserId ||
+			(post.Retweet && post.Retweet.UserId === req.user.id)
+		) {
+			return res.status(403).send('자신의 글은 리트윗할 수 없습니다.');
+		}
+		//리트윗이 가능한 대상찾고, 이미 리트윗했으면 다시 리트윗못하게 막기
+		const retweetTargetId = post.RetweetId || post.id;
+		const exPost = await Post.findOne({
+			where: { UserId: req.user.id, RetweetId: retweetTargetId },
+		});
+		if (exPost) {
+			return res.status(403).send('이미 리트윗했습니다');
+		}
+		const retweet = await Post.create({
+			UserId: req.user.id,
+			RetweetId: retweetTargetId,
+			content: 'retweet',
+		});
+		//내가 어떤 게시글을 리트윗했는지..
+		const retweetWithPrevPost = await Post.findOne({
+			where: { id: retweet.id },
+			include: [
+				{
+					model: Post,
+					as: 'Retweet',
+					include: [
+						{
+							model: User,
+							attributes: ['id', 'nickname'],
+						},
+						{
+							model: Image,
+						},
+					],
+				},
+				{
+					model: User,
+					attributes: ['id', 'nickname'],
+				},
+				{
+					model: Image,
+				},
+				{
+					model: Comment,
+					include: [
+						{
+							model: User,
+							attributes: ['id', 'nickname'],
+						},
+						{
+							model: User,
+							as: 'Likers',
+							attributes: ['id'],
+						},
+					],
+				},
+			],
+		});
+		res.status(201).json(retweetWithPrevPost);
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+});
 
 // 댓글 작성 라우터
 router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {

@@ -10,9 +10,20 @@ import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 const Home = () => {
 	const dispatch = useDispatch();
 	const { me } = useSelector((state) => state.user);
-	const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
-		(state) => state.post
+	const { mainPosts, hasMorePosts, loadPostsLoading, retweetError } =
+		useSelector((state) => state.post);
+
+	//리트윗 에러시 alert로 알려주기
+	//PostCard에 넣으면 게시글수만큼 리렌더링이 되기 때문에 한번만 보여주기 위해 상위로 끌어올림.
+	useEffect(
+		(retweetError) => {
+			if (retweetError) {
+				alert(retweetError);
+			}
+		},
+		[retweetError]
 	);
+
 	//화면 초기 로딩
 	useEffect(() => {
 		//로그인 상태 복구 - 새로고침해도 로그인이 남아있도록
