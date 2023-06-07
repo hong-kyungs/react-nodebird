@@ -15,14 +15,11 @@ const Home = () => {
 
 	//리트윗 에러시 alert로 알려주기
 	//PostCard에 넣으면 게시글수만큼 리렌더링이 되기 때문에 한번만 보여주기 위해 상위로 끌어올림.
-	useEffect(
-		(retweetError) => {
-			if (retweetError) {
-				alert(retweetError);
-			}
-		},
-		[retweetError]
-	);
+	useEffect(() => {
+		if (retweetError) {
+			alert(retweetError);
+		}
+	}, [retweetError]);
 
 	//화면 초기 로딩
 	useEffect(() => {
