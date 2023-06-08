@@ -117,10 +117,12 @@ router.post(
 	}
 );
 
-//리트윗 작성 라우터
+//리트윗 생성 라우터
 router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
 	// POST /post/1/retweet
 	try {
+		//리트윗은 게시글 작성자와 리트윗 작성자의 관계를 고려해야해서 다른 라우터에 비해 복잡하다.
+		//게시글을 찾을때 리트윗에 관한 조건도 함께 찾아야한다.
 		const post = await Post.findOne({
 			where: { id: req.params.postId },
 			include: [
