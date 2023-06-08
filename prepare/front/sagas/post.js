@@ -106,12 +106,12 @@ function* unlikePost(action) {
 
 function loadPostsAPI(lastId) {
 	//get방식에는 data를 넣을수가 없어서, data를 넣어려면 /posts 뒤에 ?key={값}으로 넣어준다.
-	//쿼리스트링으로 lastId를 보내준다. 게시물이 하나도 없어 lastId가 0이면 undefined이 될 수 있으므로, lastId가 undefined 이면 0으로..
+	//쿼리스트링으로 lastId를 보내준다. 게시물이 하나도 없어 lastId가 undefined면 lastId를 0으로 만든다.
 	return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 function* loadPosts(action) {
 	try {
-		const result = yield call(loadPostsAPI, action.data);
+		const result = yield call(loadPostsAPI, action.lastId);
 		yield put({
 			type: LOAD_POSTS_SUCCESS,
 			data: result.data,

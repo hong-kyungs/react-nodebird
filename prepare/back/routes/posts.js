@@ -10,9 +10,10 @@ router.get('/', async (req, res, next) => {
 	try {
 		const where = {};
 		if (parseInt(req.query.lastId, 10)) {
-			//초기 로딩이 아닐 때
-			where.id = { [Op.lt]: parseInt(req.query.lastId, 10) }; //lastId보다 작은 id로... 10개(limit) 불러오기
-			//ex) 12 11 10 9 8 7 6 5 4 3 2 1 , 라면 12~3까지
+			//초기 로딩이 아닐 때, 스크롤 내려서 더 불러올 때
+			where.id = { [Op.lt]: parseInt(req.query.lastId, 10) }; //lastId보다 작은 id에서 10개(limit) 불러오기
+			//ex)21 20 19 18 17 16 15 14 13 12    11 10 9 8 7 6 5 4 3 2   1 ,
+			//초기로딩: 21~12, lastId=12로 12보다 작은 11에서 두번때로딩시작, 12두번째로딩: 11~3
 		}
 		const posts = await Post.findAll({
 			where,

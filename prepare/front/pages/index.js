@@ -40,7 +40,7 @@ const Home = () => {
 				document.documentElement.scrollHeight - 300
 			) {
 				if (hasMorePosts && !loadPostsLoading) {
-					const lastId = mainPosts[mainPosts.length - 1]?.id;
+					const lastId = mainPosts[mainPosts.length - 1]?.id; // 마지막 게시글의 아이디를 보내준다.
 					dispatch({
 						type: LOAD_POSTS_REQUEST,
 						lastId,
