@@ -55,7 +55,7 @@ function* uploadImages(action) {
 		const result = yield call(uploadImagesAPI, action.data);
 		yield put({
 			type: UPLOAD_IMAGES_SUCCESS,
-			data: result.data, //백에드 좋아요라우터에서 PostId와 UserId를 받는다
+			data: result.data,
 		});
 	} catch (err) {
 		console.error(err);

@@ -14,6 +14,7 @@ const db = require('./models');
 const app = express();
 const passportConfig = require('./passport');
 
+dotenv.config();
 db.sequelize
 	.sync()
 	.then(() => {

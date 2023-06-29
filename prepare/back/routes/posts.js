@@ -5,6 +5,7 @@ const { Post, User, Image, Comment } = require('../models');
 
 const router = express.Router();
 
+//게시글 불러오는 라우터
 router.get('/', async (req, res, next) => {
 	// GET /posts
 	try {

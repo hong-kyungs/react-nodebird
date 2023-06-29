@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { END } from 'redux-saga';
 
 import AppLayout from '../components/AppLayout';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
+import wrapper from '../store/configureStore';
 
 const Home = () => {
 	const dispatch = useDispatch();
@@ -20,18 +22,6 @@ const Home = () => {
 			alert(retweetError);
 		}
 	}, [retweetError]);
-
-	//화면 초기 로딩
-	useEffect(() => {
-		//로그인 상태 복구 - 새로고침해도 로그인이 남아있도록
-		dispatch({
-			type: LOAD_MY_INFO_REQUEST,
-		});
-		//화면 초기 로딩 - 화면을 로딩하면 LOAD_POSTS_REQUEST를  바로 호출해준다.
-		dispatch({
-			type: LOAD_POSTS_REQUEST,
-		});
-	}, []);
 
 	useEffect(() => {
 		function onScroll() {
@@ -66,5 +56,24 @@ const Home = () => {
 		</AppLayout>
 	);
 };
+
+//Home 화면을 그려주기 전에 서버에서 먼저 실행된다. 반드시 Home보다 먼저 실행되어야 data를 채우고 화면에 그려진다.
+export const getServerSideProps = wrapper.getServerSideProps(
+	// store에서 만들어둔 wrapper를 불러온다.
+	(store) =>
+		async ({ req }) => {
+			store.dispatch({
+				//화면 초기 로딩
+				//로그인 상태 복구 - 새로고침해도 로그인이 남아있도록
+				type: LOAD_MY_INFO_REQUEST,
+			});
+			//화면 초기 로딩 - 화면을 로딩하면 LOAD_POSTS_REQUEST를  바로 호출해준다.
+			store.dispatch({
+				type: LOAD_POSTS_REQUEST,
+			});
+			store.dispatch(END); // 1. 위의 두 request(로그인 상태 복구, 화면 초기 로딩)이 success 될떄까지
+			await store.sagaTask.toPromise(); // 2. 기다린다. sagaTask는 store에 등록해둔 store.sagatask
+		}
+);
 
 export default Home;
