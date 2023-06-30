@@ -10,6 +10,7 @@ const router = express.Router();
 //로그인 상태 유지 라우터
 router.get('/', async (req, res, next) => {
 	//GET /user
+	console.log(req.headers);
 	try {
 		if (req.user) {
 			//req.user가 true면, 즉 로그인 정보가 있다면

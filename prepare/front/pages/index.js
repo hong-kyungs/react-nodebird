@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { END } from 'redux-saga';
+import axios from 'axios';
 
 import AppLayout from '../components/AppLayout';
 import PostForm from '../components/PostForm';
@@ -62,6 +63,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
 	// store에서 만들어둔 wrapper를 불러온다.
 	(store) =>
 		async ({ req }) => {
+			//cookie를 안보내주면 로그인 정보가 백엔드서버로 안넘어가고, 쿠키를 바로 넣어주면 모든 서버에 공유되서
+			//다른 사람도 내 정보로 로그인 되어버릴수 있다.
+			//프론트에서 cookie가 공유되는 문제해결방법? -> cookie를 지웠다가 넣는 과정으로 해결
+			const cookie = req ? req.headers.cookie : '';
+			axios.defaults.headers.Cookie = '';
+			if (req && cookie) {
+				axios.defaults.headers.Cookie = cookie;
+			}
 			store.dispatch({
 				//화면 초기 로딩
 				//로그인 상태 복구 - 새로고침해도 로그인이 남아있도록
