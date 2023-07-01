@@ -4,10 +4,17 @@ import Head from 'next/head';
 import { Checkbox, Form, Input, Button } from 'antd';
 import styled from 'styled-components';
 import Router from 'next/router';
+import axios from 'axios';
+import { END } from 'redux-saga';
 
 import useInput from '../../hooks/useInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { SIGN_UP_FAILURE, SIGN_UP_REQUEST } from '../reducers/user';
+import {
+	SIGN_UP_FAILURE,
+	SIGN_UP_REQUEST,
+	LOAD_MY_INFO_REQUEST,
+} from '../reducers/user';
+import wrapper from '../store/configureStore';
 
 const ErrorMessage = styled.div`
 	color: red;
@@ -160,5 +167,23 @@ const Signup = () => {
 		</>
 	);
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(
+	(store) =>
+		async ({ req }) => {
+			console.log('getServerSideProps start');
+			console.log(req.headers);
+			const cookie = req ? req.headers.cookie : '';
+			axios.defaults.headers.Cookie = '';
+			if (req && cookie) {
+				axios.defaults.headers.Cookie = cookie;
+			}
+			store.dispatch({
+				type: LOAD_MY_INFO_REQUEST,
+			});
+			store.dispatch(END);
+			await store.sagaTask.toPromise();
+		}
+);
 
 export default Signup;
