@@ -10,7 +10,6 @@ const router = express.Router();
 //로그인 상태 유지 라우터
 router.get('/', async (req, res, next) => {
 	//GET /user
-	console.log(req.headers);
 	try {
 		if (req.user) {
 			//req.user가 true면, 즉 로그인 정보가 있다면
@@ -40,6 +39,52 @@ router.get('/', async (req, res, next) => {
 		} else {
 			//로그인 정보가 없으면 아무것도 보내주지 않으면 된다.
 			res.status(200).json(null);
+		}
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+});
+
+//특정 사용자 정보 가져오는 라우터
+router.get('/:userId', async (req, res, next) => {
+	//GET /user/1
+	try {
+		//req.user가 true면, 즉 로그인 정보가 있다면
+		const fullUserWithoutPassword = await User.findOne({
+			where: { id: req.params.userId },
+			attributes: {
+				exclude: ['password'],
+			},
+			include: [
+				{
+					model: Post,
+					attributes: ['id'],
+				},
+				{
+					model: User,
+					as: 'Followings',
+					attributes: ['id'],
+				},
+				{
+					model: User,
+					as: 'Followers',
+					attributes: ['id'],
+				},
+			],
+		});
+
+		if (fullUserWithoutPassword) {
+			//개인정보침해 예방 ->
+			//게시글, 팔로워, 팔로잉에 다른 사용자들 id가 들어가지 않게 data를 length로 갯수만 보여지게 변화시켜서 보내준다.
+			const data = fullUserWithoutPassword.toJSON();
+			data.Posts = data.Posts.length;
+			data.Followers = data.Followers.length;
+			data.Followings = data.Followings.length;
+			res.status(200).json(data);
+		} else {
+			//로그인 정보가 없으면 아무것도 보내주지 않으면 된다.
+			res.status(404).json('존재하지 않는 사용자입니다. ');
 		}
 	} catch (error) {
 		console.error(error);
