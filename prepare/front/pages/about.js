@@ -43,7 +43,7 @@ const About = () => {
 							description='노드버드 매니아'
 						/>
 					</Card>
-				) : null}{' '}
+				) : null}
 				{/* 특정 사용자 정보(userInfo)가 SSR이 안되면 null로 텅빈페이지가 나온다. */}
 			</AppLayout>
 		</>
