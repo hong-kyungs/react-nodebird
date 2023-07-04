@@ -13,6 +13,12 @@ import {
 	LOAD_POST_REQUEST,
 	LOAD_POST_SUCCESS,
 	LOAD_POST_FAILURE,
+	LOAD_USER_POSTS_REQUEST,
+	LOAD_USER_POSTS_SUCCESS,
+	LOAD_USER_POSTS_FAILURE,
+	LOAD_HASHTAG_POSTS_REQUEST,
+	LOAD_HASHTAG_POSTS_SUCCESS,
+	LOAD_HASHTAG_POSTS_FAILURE,
 	LOAD_POSTS_REQUEST,
 	LOAD_POSTS_SUCCESS,
 	LOAD_POSTS_FAILURE,
@@ -127,6 +133,46 @@ function* loadPost(action) {
 	}
 }
 
+function loadHashtagPostsAPI(data, lastId) {
+	return axios.get(
+		`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`
+	);
+}
+function* loadHashtagPosts(action) {
+	try {
+		const result = yield call(loadHashtagPostsAPI, action.data, action.lastId);
+		yield put({
+			type: LOAD_HASHTAG_POSTS_SUCCESS,
+			data: result.data,
+		});
+	} catch (err) {
+		console.error(err);
+		yield put({
+			type: LOAD_HASHTAG_POSTS_FAILURE,
+			error: err.response.data,
+		});
+	}
+}
+
+function loadUserPostsAPI(data, lastId) {
+	return axios.get(`/user/${data}/posts?lastId=${lastId || 0}`);
+}
+function* loadUserPosts(action) {
+	try {
+		const result = yield call(loadUserPostsAPI, action.data, action.lastId);
+		yield put({
+			type: LOAD_USER_POSTS_SUCCESS,
+			data: result.data,
+		});
+	} catch (err) {
+		console.error(err);
+		yield put({
+			type: LOAD_USER_POSTS_FAILURE,
+			error: err.response.data,
+		});
+	}
+}
+
 function loadPostsAPI(lastId) {
 	//get방식에는 data를 넣을수가 없어서, data를 넣어려면 /posts 뒤에 ?key={값}으로 넣어준다.
 	//쿼리스트링으로 lastId를 보내준다. 게시물이 하나도 없어 lastId가 undefined면 lastId를 0으로 만든다.
@@ -231,6 +277,12 @@ function* WatchLoadPost() {
 	yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
 
+function* WatchLoadUserPosts() {
+	yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
+}
+function* WatchLoadHashtagPosts() {
+	yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
+}
 function* WatchLoadPosts() {
 	yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -254,6 +306,8 @@ export default function* postSaga() {
 		fork(WatchLikePost),
 		fork(WatchUnlikePost),
 		fork(WatchLoadPost),
+		fork(WatchLoadUserPosts),
+		fork(WatchLoadHashtagPosts),
 		fork(WatchLoadPosts),
 		fork(WatchAddPost),
 		fork(WatchRemovePost),
