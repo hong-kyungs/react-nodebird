@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
 import axios from 'axios';
 import { END } from 'redux-saga';
+import useSWR from 'swr';
 
 import AppLayout from '../components/AppLayout';
 import NicknameEditForm from '../components/NicknameEditForm';
@@ -19,15 +20,20 @@ const Profile = () => {
 	const dispatch = useDispatch();
 	const { me } = useSelector((state) => state.user);
 
-	//프로필 페이지로 이동시 바로 팔로우, 팔로잉 목록 불러오기
-	useEffect(() => {
-		dispatch({
-			type: LOAD_FOLLOWERS_REQUEST,
-		});
-		dispatch({
-			type: LOAD_FOLLOWINGS_REQUEST,
-		});
-	}, []);
+	const [followingsLimit, setFollowingsLimit] = useState(3);
+	const [followersLimit, setFollowersLimit] = useState(3);
+
+	const fetcher = (url) =>
+		axios.get(url, { withCredentials: true }).then((result) => result.data);
+
+	const { data: followersData, error: followerError } = useSWR(
+		`http://localhost:3065/user/followers`,
+		fetcher
+	);
+	const { data: follwingsData, error: followingError } = useSWR(
+		`http://localhost:3065/user/followings`,
+		fetcher
+	);
 
 	//로그아웃 할 경우 - 메인페이지로 보내기
 	useEffect(() => {
@@ -38,8 +44,22 @@ const Profile = () => {
 
 	//로그인 하지 않으면, 프로필에 아무일도 일어나지 않게하기
 	if (!me) {
-		return null;
+		return '내 정보 로딩중...';
 	}
+
+	const loadMoreFollowers = useCallback(() => {
+		setFollowersLimit((prev) => prev + 3);
+	}, []);
+
+	const loadMoreFollowings = useCallback(() => {
+		setFollowingsLimit((prev) => prev + 3);
+	}, []);
+
+	if (followerError || followingError) {
+		console.error(followerError || followingError);
+		return <div>팔로잉/팔로워 로딩 중 에러가 발생합니다.</div>;
+	}
+
 	return (
 		<>
 			<Head>
@@ -47,8 +67,18 @@ const Profile = () => {
 			</Head>
 			<AppLayout>
 				<NicknameEditForm />
-				<FollowList header='팔로잉' data={me.Followings} />
-				<FollowList header='팔로워' data={me.Followers} />
+				<FollowList
+					header='팔로잉'
+					data={follwingsData}
+					onClickMore={loadMoreFollowings}
+					loading={!follwingsData && !followingError}
+				/>
+				<FollowList
+					header='팔로워'
+					data={followersData}
+					onClickMore={loadMoreFollowers}
+					loading={!followersData && !followerError}
+				/>
 			</AppLayout>
 		</>
 	);

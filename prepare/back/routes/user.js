@@ -47,6 +47,44 @@ router.get('/', async (req, res, next) => {
 	}
 });
 
+//팔로우 목록 불러오기 라우터
+router.get('/followers', isLoggedIn, async (req, res, next) => {
+	// GET /user/followers
+	//PATCH /user/1/follow
+	try {
+		const user = await User.findOne({ where: { id: req.user.id } }); //1. 일단 나를 찾고,
+		if (!user) {
+			res.status(403).send('없는 사람을 찾으려고 하시네여?');
+		}
+		const followers = await user.getFollowers({
+			limit: parseInt(req.query.limit, 10),
+		}); //2. getFollowers로 팔로우 목록 가져오기
+		res.status(200).json(followers);
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+});
+
+//팔로잉 목록 불러오기 라우터
+router.get('/followings', isLoggedIn, async (req, res, next) => {
+	// GET /user/followings
+	//PATCH /user/1/follow
+	try {
+		const user = await User.findOne({ where: { id: req.user.id } }); //1. 일단 나를 찾고
+		if (!user) {
+			res.status(403).send('없는 사람을 찾으려고 하시네여?');
+		}
+		const followings = await user.getFollowings({
+			limit: parseInt(req.query.limit, 10),
+		}); //2. getFollowings로 팔로잉 목록 가져오기
+		res.status(200).json(followings);
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+});
+
 //특정 사용자 정보 가져오는 라우터
 router.get('/:userId', async (req, res, next) => {
 	//GET /user/1
@@ -304,40 +342,6 @@ router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => {
 		}
 		await user.removeFollowings(req.user.id); //그 차단할 사람에게서 팔로잉을 끊는다. -> 대칭관계이므로 팔로워가 차단된다.
 		res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
-	} catch (error) {
-		console.error(error);
-		next(error);
-	}
-});
-
-//팔로우 목록 불러오기 라우터
-router.get('/followers', isLoggedIn, async (req, res, next) => {
-	// GET /user/followers
-	//PATCH /user/1/follow
-	try {
-		const user = await User.findOne({ where: { id: req.user.id } }); //1. 일단 나를 찾고,
-		if (!user) {
-			res.status(403).send('없는 사람을 찾으려고 하시네여?');
-		}
-		const followers = await user.getFollowers(); //2. getFollowers로 팔로우 목록 가져오기
-		res.status(200).json(followers);
-	} catch (error) {
-		console.error(error);
-		next(error);
-	}
-});
-
-//팔로잉 목록 불러오기 라우터
-router.get('/followings', isLoggedIn, async (req, res, next) => {
-	// GET /user/followings
-	//PATCH /user/1/follow
-	try {
-		const user = await User.findOne({ where: { id: req.user.id } }); //1. 일단 나를 찾고
-		if (!user) {
-			res.status(403).send('없는 사람을 찾으려고 하시네여?');
-		}
-		const followings = await user.getFollowings(); //2. getFollowings로 팔로잉 목록 가져오기
-		res.status(200).json(followings);
 	} catch (error) {
 		console.error(error);
 		next(error);
