@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Menu, Input, Row, Col } from 'antd';
 import styled, { createGlobalStyle } from 'styled-components';
 import { useSelector } from 'react-redux';
+import Router from 'next/router';
 
 import UserProfile from './UserProfile';
 import LoginForm from './LoginForm';
+import useInput from '../../hooks/useInput';
 
 const SearchInput = styled(Input.Search)`
 	vertical-align: middle;
@@ -27,7 +29,12 @@ const Global = createGlobalStyle`
 `;
 
 const AppLayout = ({ children }) => {
+	const [searchInput, onChangeSearchInput] = useInput('');
 	const { me } = useSelector((state) => state.user);
+
+	const onSearch = useCallback(() => {
+		Router.push(`/hashtag/${searchInput}`);
+	}, [searchInput]);
 	return (
 		<div>
 			{/* <Global /> */}
@@ -44,7 +51,13 @@ const AppLayout = ({ children }) => {
 						</Link>
 					</Menu.Item>
 					<Menu.Item>
-						<SearchInput enterButton />
+						{/* 검색창에서 해시태그 검색하기 */}
+						<SearchInput
+							enterButton
+							value={searchInput}
+							onChange={onChangeSearchInput}
+							onSearch={onSearch} // enter를 누르면 onSearch 가 실행된다.
+						/>
 					</Menu.Item>
 					<Menu.Item>
 						<Link href='/signup'>
