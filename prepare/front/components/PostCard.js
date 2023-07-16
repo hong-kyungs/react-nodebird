@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
+import moment from 'moment';
 
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
@@ -21,6 +22,8 @@ import {
 	RETWEET_REQUEST,
 } from '../reducers/post';
 import FollowButton from './FollowButton';
+
+moment.locale('ko'); // ko로 한글로 바꿔준다
 
 const PostCard = ({ post }) => {
 	const dispatch = useDispatch();
@@ -127,6 +130,9 @@ const PostCard = ({ post }) => {
 								<PostImages images={post.Retweet.Images} />
 							)
 						}>
+						<div style={{ float: 'right' }}>
+							{moment(post.createdAt).format('YYYY. MM. DD')}
+						</div>
 						<Card.Meta
 							avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
 							title={post.Retweet.User.nickname}
@@ -134,17 +140,22 @@ const PostCard = ({ post }) => {
 						/>
 					</Card>
 				) : (
-					<Card.Meta
-						avatar={
-							<Link href={`/user/${post.User.id}`}>
-								<a>
-									<Avatar>{post.User.nickname[0]}</Avatar>
-								</a>
-							</Link>
-						}
-						title={post.User.nickname}
-						description={<PostCardContent postData={post.content} />}
-					/>
+					<>
+						<div style={{ float: 'right' }}>
+							{moment(post.createdAt).format('YYYY. MM. DD')}
+						</div>
+						<Card.Meta
+							avatar={
+								<Link href={`/user/${post.User.id}`}>
+									<a>
+										<Avatar>{post.User.nickname[0]}</Avatar>
+									</a>
+								</Link>
+							}
+							title={post.User.nickname}
+							description={<PostCardContent postData={post.content} />}
+						/>
+					</>
 				)}
 			</Card>
 			{commentFormOpened && (

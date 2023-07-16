@@ -1,19 +1,21 @@
 {
   "parser": "@babel/eslint-parser",
   "parserOptions": {
-    "ecmaVersion": "latest",
+    "ecmaVersion": 2020,
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
     }
+    // "requireConfigFile": false
   },
   "env": {
     "browser": true,
     "node": true,
     "es6": true
   },
-  "extends": ["airbnb"],
-  "plugins": ["import", "react-hooks"],
+  "extends": ["airbnb", "prettier"],
+  "plugins": ["import", "react-hooks", "jsx-a11y"],
+  "spaced-comment": ["error", "always", { "markers": ["/"] }],
   "rules": {
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/anchor-is-valid": "off",
@@ -25,5 +27,6 @@
     "object-curly-newline": "off",
     "linebreak-style": "off",
     "no-param-reassign": "off"
+    // "max-len": ["warn", { "code": 120 }]
   }
 }
