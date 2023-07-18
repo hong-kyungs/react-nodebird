@@ -1,4 +1,4 @@
-import { produce } from 'immer';
+import produce from '../utill/produce';
 
 export const initialState = {
 	// isLoggingIn: false, //로그인 시도중

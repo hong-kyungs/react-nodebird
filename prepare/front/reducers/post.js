@@ -1,5 +1,5 @@
 import shortId from 'shortid';
-import { produce } from 'immer';
+import produce from '../utill/produce';
 import { faker } from '@faker-js/faker';
 
 export const initialState = {
