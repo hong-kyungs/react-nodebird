@@ -7,6 +7,7 @@ import {
 	REMOVE_IMAGE,
 } from '../reducers/post';
 import useInput from '../../hooks/useInput';
+import { backUrl } from '../config/config';
 
 const PostForm = () => {
 	const { imagePaths, addPostDone } = useSelector((state) => state.post);
@@ -76,7 +77,8 @@ const PostForm = () => {
 		<Form
 			style={{ margin: '10px 0 20px' }}
 			encType='multipart/form-data'
-			onFinish={onSubmit}>
+			onFinish={onSubmit}
+		>
 			<Input.TextArea
 				value={text}
 				onChange={onChangeText}
@@ -102,11 +104,7 @@ const PostForm = () => {
 			<div>
 				{imagePaths.map((v, i) => (
 					<div key={v} style={{ display: 'inline-block' }}>
-						<img
-							src={`http://localhost:3065/${v}`}
-							style={{ width: '200px' }}
-							alt={v}
-						/>
+						<img src={`${backUrl}/${v}`} style={{ width: '200px' }} alt={v} />
 						<div>
 							<Button onClick={onRemoveImage(i)}>제거</Button>
 						</div>
