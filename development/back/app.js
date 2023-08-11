@@ -14,8 +14,6 @@ const hashtagRouter = require('./routes/hashtag');
 const db = require('./models');
 const app = express();
 const passportConfig = require('./passport');
-const hpp = require('hpp');
-const helmet = require('helmet');
 
 dotenv.config();
 db.sequelize
@@ -27,14 +25,7 @@ db.sequelize
 
 passportConfig();
 
-if (process.env.NODE_ENV === 'production') {
-	app.use(morgan('combined'));
-	app.use(hpp());
-	app.use(helmet());
-} else {
-	app.use(morgan('dev'));
-}
-
+app.use(morgan('dev'));
 app.use(
 	cors({
 		//*로 모두 다 허용해줬지만 실무에서는 실제로 요청이 허용될 주소를 넣어준다.
