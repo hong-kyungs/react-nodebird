@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === 'production') {
 app.use(
 	cors({
 		//*로 모두 다 허용해줬지만 실무에서는 실제로 요청이 허용될 주소를 넣어준다.
-		origin: ['http://localhost:3000', 'nodebird.com', 'http://13.125.17.184'],
+		origin: ['http://localhost:3000', 'nodebird.com', 'http://43.201.95.67'],
 		credentials: true,
 	})
 );
