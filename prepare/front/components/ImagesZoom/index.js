@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Slick from 'react-slick';
-import { backUrl } from '../../config/config';
 
 import {
 	Overlay,
@@ -35,7 +34,7 @@ const ImagesZoom = ({ images, onClose }) => {
 						{/* Slick안에 이미지들 넣어주기 */}
 						{images.map((v) => (
 							<ImgWrapper key={v.src}>
-								<img src={`${backUrl}/${v.src}`} alt={v.src} />
+								<img src={`${v.src}`} alt={v.src} />
 							</ImgWrapper>
 						))}
 					</Slick>
