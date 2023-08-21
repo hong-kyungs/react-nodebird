@@ -20,7 +20,7 @@ try {
 AWS.config.update({
 	accessKeyId: process.env.S3_ACCESS_KEY_ID,
 	secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-	region: 'ap-notrheast-2'
+	region: 'ap-northeast-2'
 })
 
 // form마다 형식이 다르기때문에 multer미들웨어를 사용해서 라우터마다 별도의 세팅을 해줘야한다.
