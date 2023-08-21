@@ -29,7 +29,7 @@ const upload = multer({
 	//나중에는 하드웨어가 아니라 클라우드에 저장. 나중에 storage 옵션만 s3옵션으로 바꾸면 된다.
 	storage: multerS3({
 		s3: new AWS.S3(), //s3 권한을 얻을 수 있다.
-		bucket: 'react-nodebid-aws-s3',
+		bucket: 'react-nodebird-aws-s3',
 		key(req, file, cb){
 			//original 폴더를 만들고, '날짜_파일이름'을 넣어서 중복피하기
 			cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`) 
