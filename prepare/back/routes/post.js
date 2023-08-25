@@ -20,8 +20,8 @@ try {
 AWS.config.update({
 	accessKeyId: process.env.S3_ACCESS_KEY_ID,
 	secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-	region: 'ap-northeast-2'
-})
+	region: 'ap-northeast-2',
+});
 
 // form마다 형식이 다르기때문에 multer미들웨어를 사용해서 라우터마다 별도의 세팅을 해줘야한다.
 const upload = multer({
@@ -30,10 +30,10 @@ const upload = multer({
 	storage: multerS3({
 		s3: new AWS.S3(), //s3 권한을 얻을 수 있다.
 		bucket: 'react-nodebird-aws-s3',
-		key(req, file, cb){
+		key(req, file, cb) {
 			//original 폴더를 만들고, '날짜_파일이름'을 넣어서 중복피하기
-			cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`) 
-		}
+			cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`);
+		},
 	}),
 	limits: { fileSize: 20 * 1024 * 1024 }, //20MB, 20MB으로 제한
 });
@@ -116,7 +116,9 @@ router.post(
 	async (req, res, next) => {
 		//POST /post/images
 		console.log(req.files);
-		res.json(req.files.map((v) => v.location));
+		res.json(
+			req.files.map((v) => v.location.replace(/\/original\//, 'thumb/'))
+		); //원본 대신 thumb 폴더에 있는 리사이즈 이미지가 프론트로 간다
 	}
 );
 

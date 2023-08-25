@@ -103,7 +103,11 @@ const PostForm = () => {
 			<div>
 				{imagePaths.map((v, i) => (
 					<div key={v} style={{ display: 'inline-block' }}>
-						<img src={v} style={{ width: '200px' }} alt={v} />
+						<img
+							src={v.replace(/\/thumb\//, 'original/')} // 미리보기는 리사이징 이미지가 아닌 원본이미지로 - 리사이징 시간 에러 해결
+							style={{ width: '200px' }}
+							alt={v}
+						/>
 						<div>
 							<Button onClick={onRemoveImage(i)}>제거</Button>
 						</div>
