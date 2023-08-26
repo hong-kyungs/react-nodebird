@@ -66,9 +66,12 @@ const User = () => {
 					/>
 					<meta
 						property='og:image'
-						content='https://nodebird.com/favicon.ico'
+						content='https://nodebird.store/favicon.ico'
 					/>
-					<meta property='og:url' content={`https://nodebird.com/user/${id}`} />
+					<meta
+						property='og:url'
+						content={`https://nodebird.store/user/${id}`}
+					/>
 				</Head>
 			)}
 			{userInfo ? (
@@ -89,7 +92,8 @@ const User = () => {
 							<br />
 							{userInfo.Followers}
 						</div>,
-					]}>
+					]}
+				>
 					<Card.Meta
 						avatar={<Avatar>{userInfo.nickname[0]}</Avatar>}
 						title={userInfo.nickname}
