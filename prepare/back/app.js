@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === 'production') {
 app.use(
 	cors({
 		//*로 모두 다 허용해줬지만 실무에서는 실제로 요청이 허용될 주소를 넣어준다.
-		origin: ['http://localhost:3000', 'http://nodebird.store'],
+		origin: 'https://nodebird.store',
 		credentials: true,
 	})
 );
@@ -55,11 +55,11 @@ app.use(
 		saveUninitialized: false,
 		resave: false,
 		secret: process.env.COOKIE_SECRET,
-		cookie:{
+		cookie: {
 			httpOnly: true,
-			secure: false,
-			domain: process.env.NODE_ENV === 'production' && '.nodebird.store'
-		}
+			secure: true,
+			domain: process.env.NODE_ENV === 'production' && '.nodebird.store',
+		},
 	})
 );
 app.use(passport.initialize());
@@ -78,6 +78,6 @@ app.use('/post', postRouter);
 app.use('/user', userRouter);
 app.use('/hashtag', hashtagRouter);
 
-app.listen(80, () => {
+app.listen(3065, () => {
 	console.log('서버 실행 중');
 });
