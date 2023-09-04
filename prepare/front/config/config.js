@@ -1,3 +1,1 @@
-export const backUrl = 'production'
-	? 'http://api.nodebird.store'
-	: 'http://localhost:3065';
+export const backUrl = 'http://api.nodebird.store';
