@@ -11,6 +11,7 @@ import FollowList from '../components/FollowList';
 import { useSelector } from 'react-redux';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import wrapper from '../store/configureStore';
+import { backUrl } from '../config/config';
 
 //fetcher는 이 주소를 실제로 어떻게 가져올것인지 넣어주기. - axios.get
 const fetcher = (url) =>
@@ -22,11 +23,11 @@ const Profile = () => {
 	const [followersLimit, setFollowersLimit] = useState(3);
 
 	const { data: followersData, error: followerError } = useSWR(
-		`http://localhost:3065/user/followers?limit=${followersLimit}`,
+		`${backUrl}/user/followers?limit=${followersLimit}`,
 		fetcher
 	);
 	const { data: follwingsData, error: followingError } = useSWR(
-		`http://localhost:3065/user/followings?limit=${followingsLimit}`,
+		`${backUrl}/user/followings?limit=${followingsLimit}`,
 		fetcher
 	);
 
