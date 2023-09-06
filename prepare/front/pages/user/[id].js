@@ -19,7 +19,7 @@ const User = () => {
 	const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
 		(state) => state.post
 	);
-	const { userInfo } = useSelector((state) => state.user);
+	const { userInfo, me } = useSelector((state) => state.user);
 
 	useEffect(() => {
 		const onScroll = () => {
@@ -74,8 +74,9 @@ const User = () => {
 					/>
 				</Head>
 			)}
-			{userInfo ? (
+			{userInfo && userInfo.id !== me.id ? (
 				<Card
+					style={{ marginBottom: 20 }}
 					actions={[
 						<div key='twit'>
 							짹짹

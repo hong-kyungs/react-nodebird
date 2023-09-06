@@ -28,7 +28,7 @@ db.sequelize
 passportConfig();
 
 if (process.env.NODE_ENV === 'production') {
-	app.set('trust proxy', 1);
+	// app.set('trust proxy', 1);
 	app.use(morgan('combined'));
 	app.use(hpp());
 	app.use(helmet());
@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === 'production') {
 app.use(
 	cors({
 		//*로 모두 다 허용해줬지만 실무에서는 실제로 요청이 허용될 주소를 넣어준다.
-		origin: 'https://nodebird.store',
+		origin: ['http://localhost:3060', 'https://nodebird.store'],
 		credentials: true,
 	})
 );
@@ -56,10 +56,10 @@ app.use(
 		saveUninitialized: false,
 		resave: false,
 		secret: process.env.COOKIE_SECRET,
-		proxy: true,
+		// proxy: true,
 		cookie: {
 			httpOnly: true,
-			secure: true,
+			secure: false,
 			domain: process.env.NODE_ENV === 'production' && '.nodebird.store',
 		},
 	})

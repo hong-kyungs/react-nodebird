@@ -334,6 +334,28 @@ router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
 	}
 });
 
+//게시글 수정 라우터
+router.patch('/:postId', isLoggedIn, async (req, res, next) => {
+	// '/' 는 실제로는 '/post'다. // PATCH /post/1
+	try {
+		await Post.update(
+			{
+				content: req.body.content,
+			},
+			{
+				where: { id: req.params.postId, UserId: req.user.id },
+			}
+		);
+		res.json({
+			PostId: parseInt(req.params.postId, 10),
+			content: req.body.content,
+		});
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+});
+
 //게시글 삭제 라우터
 router.delete('/:postId', isLoggedIn, async (req, res, next) => {
 	// '/' 는 실제로는 '/post'다. // DELETE /post/1
