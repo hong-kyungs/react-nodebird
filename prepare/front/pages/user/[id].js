@@ -74,7 +74,7 @@ const User = () => {
 					/>
 				</Head>
 			)}
-			{userInfo && userInfo.id !== me.id ? (
+			{userInfo && userInfo.id !== me?.id ? (
 				<Card
 					style={{ marginBottom: 20 }}
 					actions={[

@@ -16,20 +16,24 @@ const PostCardContent = ({
 	);
 	const [editText, setEditText] = useState(postData);
 
-	useEffect(() => {
-		if (updatePostDone) {
-			onCancelUpdate();
-			console.log('update');
-		}
-	}, [updatePostDone]);
+	/*
+게시글 수정 완료시 원래화면으로 돌아가기
+제로초님의 방법 - 나는 부모 onChangePost에서 setEditMode 바꿔줌
+useEffect(() => {
+	if (updatePostDone) {
+		onCancelUpdate();
+	}
+}, [updatePostDone]);
+*/
 
 	const onChangeText = useCallback((e) => {
 		setEditText(e.target.value);
 	});
 
 	const onClickCancel = useCallback(() => {
-		setEditText(postData);
-		onCancelUpdate();
+		//1. 취소버튼 클릭시
+		setEditText(postData); // 2. 게시글 수정전 원래상태로 돌려주고
+		onCancelUpdate(); // 3. 창닫기
 	});
 
 	return (

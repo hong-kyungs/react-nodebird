@@ -337,6 +337,7 @@ router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
 //게시글 수정 라우터
 router.patch('/:postId', isLoggedIn, async (req, res, next) => {
 	// '/' 는 실제로는 '/post'다. // PATCH /post/1
+	const hashtags = req.body.content.match(/#[^\s#]+/g);
 	try {
 		await Post.update(
 			{
@@ -346,6 +347,15 @@ router.patch('/:postId', isLoggedIn, async (req, res, next) => {
 				where: { id: req.params.postId, UserId: req.user.id },
 			}
 		);
+		const post = await Post.findOne({ where: { id: req.params.postId } }); //1. 포스트를 찾고
+		if (hashtags) {
+			const result = await Promise.all(
+				hashtags.map((tag) =>
+					Hashtag.findOrCreate({ where: { name: tag.slice(1).toLowerCase() } })
+				)
+			); //[[노드, true], [리액트, true]]
+			await post.setHashtags(result.map((v) => v[0])); // 2. 해시태그가 수정되면 수정된 해시태그들 새로 만드는 setHashtag  - 1에서 찾은 post에 setHashtags
+		}
 		res.json({
 			PostId: parseInt(req.params.postId, 10),
 			content: req.body.content,
