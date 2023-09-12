@@ -39,6 +39,7 @@ useEffect(() => {
 	return (
 		// 첫 번째 게시글 #해시태그 #해시태그
 		<div>
+			{/*editMode가 true면 게시글 수정하는 textarea 보여주고 false면 기존 게시글 보여주기*/}
 			{editMode ? (
 				<>
 					<TextArea value={editText} onChange={onChangeText} />

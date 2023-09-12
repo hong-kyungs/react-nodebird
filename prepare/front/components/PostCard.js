@@ -66,6 +66,7 @@ const PostCard = ({ post }) => {
 		setEditMode(false);
 	}, []);
 
+	//고차함수를 만들어 자식으로부터 editText를 전달받아서 실행
 	const onChangePost = useCallback(
 		(editText) => () => {
 			dispatch({
