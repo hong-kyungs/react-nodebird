@@ -3,6 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Card, Avatar, Button } from 'antd';
 import { logoutRequestAction } from '../reducers/user';
 import Link from 'next/link';
+import styled from 'styled-components';
+
+const ButtonWrapper = styled(Button)`
+	margin-top: 10px;
+`;
 
 const UserProfile = () => {
 	const dispatch = useDispatch();
@@ -38,7 +43,8 @@ const UserProfile = () => {
 						</a>
 					</Link>
 				</div>,
-			]}>
+			]}
+		>
 			<Card.Meta
 				avatar={
 					<Link href={`/user/${me.id}`}>
@@ -49,9 +55,9 @@ const UserProfile = () => {
 				}
 				title={me.nickname}
 			/>
-			<Button onClick={onLogOut} loading={logOutLoading}>
+			<ButtonWrapper onClick={onLogOut} loading={logOutLoading}>
 				로그아웃
-			</Button>
+			</ButtonWrapper>
 		</Card>
 	);
 };

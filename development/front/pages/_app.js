@@ -1,4 +1,5 @@
-//_app.js는 페이지들의 공통되는 부분을 처리하는 공간.
+//_app.js는 페이지들(pages)의 공통되는 부분을 처리하는 공간.
+//-> _app.js가 index.js의 부모인 셈이다.
 import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';

@@ -73,6 +73,7 @@ router.get('/', async (req, res, next) => {
 router.get('/related', async (req, res, next) => {
 	// GET /posts/related
 	try {
+		//게시글 불러오는 라우터 복사해서 팔로잉 찾는 부분만 추가
 		const followings = await User.findAll({
 			attributes: ['id'],
 			include: [

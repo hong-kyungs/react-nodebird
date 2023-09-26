@@ -1,3 +1,4 @@
+//공통메뉴
 import React, { useCallback } from 'react';
 
 import PropTypes from 'prop-types';
@@ -80,7 +81,8 @@ const AppLayout = ({ children }) => {
 						<a
 							href='https://hong-kyungs.github.io/'
 							target='_blank'
-							rel='noreferrer noopener'>
+							rel='noreferrer noopener'
+						>
 							My Blog
 						</a>
 					</Col>
