@@ -38,7 +38,7 @@ const AppLayout = ({ children }) => {
 	}, [searchInput]);
 	return (
 		<div>
-			{/* <Global /> */}
+			<Global />
 			<div>
 				<Menu mode='horizontal'>
 					<Menu.Item>

@@ -167,7 +167,7 @@ function* logIn(action) {
 function logOutAPI() {
 	return axios.post('/user/logout');
 }
-function* logOut(action) {
+function* logOut() {
 	try {
 		yield call(logOutAPI);
 		yield put({

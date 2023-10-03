@@ -82,8 +82,11 @@ const PostCard = ({ post }) => {
 	return (
 		<div style={{ marginBottom: 20 }}>
 			<Card
+				//cover - image
 				cover={post.Images[0] && <PostImages images={post.Images} />}
+				//actions - button
 				actions={[
+					//리트윗버튼
 					<RetweetOutlined key='retweet' onClick={onRetweet} />,
 					//좋아요 버튼
 					liked ? (
@@ -95,18 +98,23 @@ const PostCard = ({ post }) => {
 					) : (
 						<HeartOutlined key='heart' onClick={onLike} />
 					),
+					//커멘트 버튼
 					<MessageOutlined key='comment' onClick={onToggleComment} />,
+					//더보기 버튼
 					<Popover
 						key='more'
 						content={
 							<Button.Group>
+								{/* 내 아이디와 게시글 작성자 아이디와 같으면 ? 수정, 삭제가능 */}
+								{/* : 다르면 ? 신고가능 */}
 								{id && post.User.id === id ? (
 									<>
 										<Button>수정</Button>
 										<Button
 											type='danger'
 											onClick={onRemovePost}
-											loading={removePostLoading}>
+											loading={removePostLoading}
+										>
 											삭제
 										</Button>
 									</>
@@ -114,14 +122,16 @@ const PostCard = ({ post }) => {
 									<Button>신고</Button>
 								)}
 							</Button.Group>
-						}>
+						}
+					>
 						<EllipsisOutlined />
 					</Popover>,
 				]}
 				title={
 					post.RetweetId ? `${post.User.nickname}님이 리트윗 하셨습니다.` : null
 				}
-				extra={id && <FollowButton post={post} />}>
+				extra={id && <FollowButton post={post} />}
+			>
 				{/* 리트윗경우에는 Card안에 Card를 넣어준다. */}
 				{post.RetweetId && post.Retweet ? (
 					<Card
@@ -129,7 +139,8 @@ const PostCard = ({ post }) => {
 							post.Retweet.Images[0] && (
 								<PostImages images={post.Retweet.Images} />
 							)
-						}>
+						}
+					>
 						<div style={{ float: 'right' }}>
 							{moment(post.createdAt).format('YYYY. MM. DD')}
 						</div>
