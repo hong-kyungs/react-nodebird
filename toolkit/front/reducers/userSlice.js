@@ -99,6 +99,30 @@ export const changeNickname = createAsyncThunk(
 	}
 );
 
+export const loadFollowers = createAsyncThunk(
+	'user/loadFollowers',
+	async () => {
+		const response = await axios.get('/user/followers');
+		return response.data;
+	}
+);
+
+export const loadFollowings = createAsyncThunk(
+	'user/loadFollowings',
+	async () => {
+		const response = await axios.get('/user/followings');
+		return response.data;
+	}
+);
+
+export const removeFollower = createAsyncThunk(
+	'user/removeFollower',
+	async (data) => {
+		const response = await axios.delete(`/user/follower/${data}`);
+		return response.data;
+	}
+);
+
 const userSlice = createSlice({
 	name: 'user',
 	initialState,
@@ -214,6 +238,50 @@ const userSlice = createSlice({
 			.addCase(changeNickname.rejected, (state, action) => {
 				state.changeNicknameLoading = false;
 				state.changeNicknameError = action.error;
+			})
+			.addCase(loadFollowers.pending, (state) => {
+				state.loadFollowersLoading = true;
+				state.loadFollowersDone = false;
+				state.loadFollowersError = null;
+			})
+			.addCase(loadFollowers.fulfilled, (state, action) => {
+				state.loadFollowersLoading = false;
+				state.me.Followers = action.payload;
+				state.loadFollowersDone = true;
+			})
+			.addCase(loadFollowers.rejected, (state, action) => {
+				state.loadFollowersLoading = false;
+				state.loadFollowersError = action.error;
+			})
+			.addCase(loadFollowings.pending, (state) => {
+				state.loadFollowingsLoading = true;
+				state.loadFollowingsDone = false;
+				state.loadFollowingsError = null;
+			})
+			.addCase(loadFollowings.fulfilled, (state, action) => {
+				state.loadFollowingsLoading = false;
+				state.me.Followings = action.payload;
+				state.loadFollowingsDone = true;
+			})
+			.addCase(loadFollowings.rejected, (state, action) => {
+				state.loadFollowingsLoading = false;
+				state.loadFollowingsError = action.error;
+			})
+			.addCase(removeFollower.pending, (state) => {
+				state.removeFollowerLoading = true;
+				state.removeFollowerDone = false;
+				state.removeFollowerError = null;
+			})
+			.addCase(removeFollower.fulfilled, (state, action) => {
+				state.removeFollowerLoading = false;
+				state.me.Followers = state.me.Followers.filter(
+					(v) => v.id !== action.payload.UserId
+				);
+				state.removeFollowerDone = true;
+			})
+			.addCase(removeFollower.rejected, (state, action) => {
+				state.removeFollowerLoading = false;
+				state.removeFollowerError = action.error;
 			}),
 });
 

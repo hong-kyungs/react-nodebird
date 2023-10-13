@@ -9,8 +9,8 @@ import AppLayout from '../components/AppLayout';
 import NicknameEditForm from '../components/NicknameEditForm';
 import FollowList from '../components/FollowList';
 import { useSelector } from 'react-redux';
-import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import wrapper from '../store/configureStore';
+import { loadMyInfo } from '../reducers/userSlice';
 
 //fetcher는 이 주소를 실제로 어떻게 가져올것인지 넣어주기. - axios.get
 const fetcher = (url) =>
@@ -91,9 +91,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			if (req && cookie) {
 				axios.defaults.headers.Cookie = cookie;
 			}
-			store.dispatch({
-				type: LOAD_MY_INFO_REQUEST,
-			});
+			store.dispatch(loadMyInfo());
 			store.dispatch(END);
 			await store.sagaTask.toPromise();
 		}
