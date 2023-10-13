@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { Button } from 'antd';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from '../reducers/user';
+import { follow, unfollow } from '../reducers/userSlice';
 
 const FollowButton = ({ post }) => {
 	const dispatch = useDispatch();
@@ -16,16 +16,10 @@ const FollowButton = ({ post }) => {
 	const onClickButton = useCallback(() => {
 		//이미 팔로우하고 있으면 언팔로우
 		if (isFollowing) {
-			dispatch({
-				type: UNFOLLOW_REQUEST,
-				data: post.User.id,
-			});
+			dispatch(unfollow(post.User.id));
 		} else {
 			//팔로우 안하고 있으면 팔로우(언팔로우 -> 팔로우)
-			dispatch({
-				type: FOLLOW_REQUEST,
-				data: post.User.id,
-			});
+			dispatch(follow(post.User.id));
 		}
 	}, [isFollowing]);
 
