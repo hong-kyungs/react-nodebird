@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPost, UPLOAD_IMAGES_REQUEST, REMOVE_IMAGE } from '../reducers/post';
+import { addPost, uploadImages, removeImage } from '../reducers/post';
 import useInput from '../../hooks/useInput';
 
 const PostForm = () => {
@@ -35,7 +35,7 @@ const PostForm = () => {
 			formData.append('image', p); //append로 추가
 		});
 		formData.append('content', text);
-		return dispatch(addPost(formData));
+		return dispatch(addPost(formData)); // 이미지경로, 텍스트가 합쳐진 formData를 전달
 	}, [text, imagePaths]);
 
 	const onClickImageUpload = useCallback(() => {
@@ -49,18 +49,12 @@ const PostForm = () => {
 		[].forEach.call(e.target.files, (f) => {
 			imageFormData.append('image', f);
 		});
-		dispatch({
-			type: UPLOAD_IMAGES_REQUEST,
-			data: imageFormData,
-		});
+		dispatch(uploadImages(imageFormData));
 	});
 
 	const onRemoveImage = useCallback(
 		(index) => () => {
-			dispatch({
-				type: REMOVE_IMAGE,
-				data: index,
-			});
+			dispatch(removeImage(index));
 		},
 		[]
 	);
@@ -78,6 +72,7 @@ const PostForm = () => {
 				placeholder='어떤 신기한 일이 있었나요?'
 			/>
 			<div>
+				{/* 이미지 input */}
 				<input
 					type='file'
 					name='image'

@@ -19,7 +19,7 @@ import {
 	removePost,
 	likePost,
 	unlikePost,
-	RETWEET_REQUEST,
+	retweet,
 	unlikePost,
 } from '../reducers/postSlice';
 import FollowButton from './FollowButton';
@@ -63,10 +63,7 @@ const PostCard = ({ post }) => {
 		if (!id) {
 			return alert('로그인이 필요합니다.');
 		}
-		return dispatch({
-			type: RETWEET_REQUEST,
-			data: post.id,
-		});
+		return dispatch(retweet(post.id));
 	}, [id]);
 
 	const liked = post.Likers.find((v) => v.id === id);
@@ -119,6 +116,7 @@ const PostCard = ({ post }) => {
 						<EllipsisOutlined />
 					</Popover>,
 				]}
+				//리트윗게시글이면 title 넣어주기
 				title={
 					post.RetweetId ? `${post.User.nickname}님이 리트윗 하셨습니다.` : null
 				}

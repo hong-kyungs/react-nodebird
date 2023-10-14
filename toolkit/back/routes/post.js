@@ -59,6 +59,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
 		}
 		if (req.body.image) {
 			//req.body.image에 imagePath가 들어간다.
+			//이미지가 여러개일떄
 			if (Array.isArray(req.body.image)) {
 				//이미지를 여러개 올리면 image: [제로초.png, 부기초.png] 와 같이 배열로 들어간다.
 				const images = await Promise.all(
@@ -67,6 +68,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
 				);
 				await post.addImages(images);
 			} else {
+				//이미지가 하나일때
 				//이미지를 하나면 올리면 image: 제로초.png 와 같이 배열로 감싸지지 않는다.
 				const image = await Image.create({ src: req.body.image });
 				await post.addImages(image);
@@ -112,8 +114,8 @@ router.post(
 	upload.array('image'),
 	async (req, res, next) => {
 		//POST /post/images
-		console.log(req.files);
-		res.json(req.files.map((v) => v.filename));
+		console.log(req.files); //req.files에 업로드한 이미지에 대한 정보가 들어있다.
+		res.json(req.files.map((v) => v.filename)); // 어디로 업로드 됐는지 파일명을 다시 프론트로 보내준다.
 	}
 );
 
@@ -209,7 +211,7 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
 		const retweet = await Post.create({
 			UserId: req.user.id,
 			RetweetId: retweetTargetId,
-			content: 'retweet',
+			content: 'retweet', // 게시글은 content를 필수로 설정해두었기에 넘어둠.
 		});
 		//내가 어떤 게시글을 리트윗했는지..
 		const retweetWithPrevPost = await Post.findOne({

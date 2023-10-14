@@ -68,10 +68,29 @@ export const unlikePost = createAsyncThunk('post/unlikePost', async (data) => {
 	return response.data;
 });
 
+export const uploadImages = createAsyncThunk(
+	'post/uploadImages',
+	async (data) => {
+		const response = await axios.post('/post/images', data);
+		return response.data;
+	}
+);
+
+export const retweet = createAsyncThunk('post/retweet', async (data) => {
+	const response = await axios.post(`/post/${data}/retweet`);
+	return response.data;
+});
+
 const postSlice = createSlice({
 	name: 'post',
 	initialState,
-	reducers: {},
+	reducers: {
+		removeImage(state, action) {
+			state.imagePaths = state.imagePaths.filter(
+				(v, i) => i !== action.payload
+			);
+		},
+	},
 	extraReducers: (builder) =>
 		builder
 			.addCase(HYDRATE, (state, action) => ({
@@ -141,12 +160,12 @@ const postSlice = createSlice({
 				state.addCommentLoading = false;
 				state.addCommentError = action.error;
 			})
-			.addCase(likePost.pending, async (state) => {
+			.addCase(likePost.pending, (state) => {
 				state.likePostLoading = true;
 				state.likePostDone = false;
 				state.likePostError = null;
 			})
-			.addCase(likePost.fulfilled, async (state, action) => {
+			.addCase(likePost.fulfilled, (state, action) => {
 				const post = state.mainPosts.find(
 					(v) => v.id === action.payload.PostId
 				);
@@ -154,16 +173,16 @@ const postSlice = createSlice({
 				state.likePostLoading = false;
 				state.likePostDone = true;
 			})
-			.addCase(likePost.rejected, async (state, action) => {
+			.addCase(likePost.rejected, (state, action) => {
 				state.likePostLoading = false;
 				state.likePostError = action.error;
 			})
-			.addCase(unlikePost.pending, async (state) => {
+			.addCase(unlikePost.pending, (state) => {
 				state.unlikePostLoading = true;
 				state.unlikePostDone = false;
 				state.unlikePostError = null;
 			})
-			.addCase(unlikePost.fulfilled, async (state, action) => {
+			.addCase(unlikePost.fulfilled, (state, action) => {
 				const post = state.mainPosts.find(
 					(v) => v.id === action.payload.PostId
 				);
@@ -171,9 +190,37 @@ const postSlice = createSlice({
 				state.unlikePostLoading = false;
 				state.unlikePostDone = true;
 			})
-			.addCase(unlikePost.rejected, async (state, action) => {
+			.addCase(unlikePost.rejected, (state, action) => {
 				state.unlikePostLoading = false;
 				state.unlikePostError = action.err;
+			})
+			.addCase(uploadImages.pending, (state) => {
+				state.uploadImagesLoading = true;
+				state.uploadImagesDone = false;
+				state.uploadImagesError = null;
+			})
+			.addCase(uploadImages.fulfilled, (state, action) => {
+				state.uploadImagesLoading = false;
+				state.uploadImagesDone = true;
+				state.imagePaths = action.payload;
+			})
+			.addCase(uploadImages.rejected, (state, action) => {
+				state.uploadImagesLoading = false;
+				state.uploadImagesError = action.error;
+			})
+			.addCase(retweet.pending, (state) => {
+				state.retweetLoading = true;
+				state.retweetDone = false;
+				state.retweetError = null;
+			})
+			.addCase(retweet.fulfilled, (state, action) => {
+				state.retweetLoading = false;
+				state.retweetDone = true;
+				state.mainPosts.unshift(action.payload);
+			})
+			.addCase(retweet.rejected, (state, action) => {
+				state.retweetLoading = false;
+				state.retweetError = action.error;
 			}),
 });
 
