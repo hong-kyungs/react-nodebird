@@ -119,7 +119,7 @@ router.post(
 	}
 );
 
-//공유 게시글 불러오는 라우터
+//공유 게시글 불러오는 라우터(특정 하나의 게시글)
 router.get('/:postId', async (req, res, next) => {
 	// GET /post/1
 	try {

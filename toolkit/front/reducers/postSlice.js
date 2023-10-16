@@ -81,6 +81,11 @@ export const retweet = createAsyncThunk('post/retweet', async (data) => {
 	return response.data;
 });
 
+export const loadPost = createAsyncThunk('post/loadPost', async (data) => {
+	const response = await axios.get(`/post/${data}`);
+	return response.data;
+});
+
 const postSlice = createSlice({
 	name: 'post',
 	initialState,
@@ -221,6 +226,20 @@ const postSlice = createSlice({
 			.addCase(retweet.rejected, (state, action) => {
 				state.retweetLoading = false;
 				state.retweetError = action.error;
+			})
+			.addCase(loadPost.pending, (state) => {
+				state.loadPostLoading = true;
+				state.loadPostDone = false;
+				state.loadPostError = null;
+			})
+			.addCase(loadPost.fulfilled, (state, action) => {
+				state.loadPostLoading = false;
+				state.loadPostDone = true;
+				state.singlePost = action.payload; //선택된 하나의 게시글이 singlePost에 저장하도록 한다.
+			})
+			.addCase(loadPost.rejected, (state, action) => {
+				state.loadPostLoading = false;
+				state.loadPostError = action.error;
 			}),
 });
 

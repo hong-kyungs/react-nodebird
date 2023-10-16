@@ -6,7 +6,7 @@ import axios from 'axios';
 import Head from 'next/head';
 
 import wrapper from '../../store/configureStore';
-import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
+import { loadMyInfo } from '../../reducers/userSlice';
 import { LOAD_POST_REQUEST } from '../../reducers/post';
 import AppLayout from '../../components/AppLayout';
 import PostCard from '../../components/PostCard';
@@ -53,13 +53,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			if (req && cookie) {
 				axios.defaults.headers.Cookie = cookie;
 			}
-			store.dispatch({
-				type: LOAD_MY_INFO_REQUEST,
-			});
-			store.dispatch({
-				type: LOAD_POST_REQUEST,
-				data: params.id, //params.id로 useRouter의 id에 접근이 가능하다.
-			});
+			store.dispatch(loadMyInfo());
+			store.dispatch(loadPost(params.id)); //params.id로 useRouter의 id에 접근이 가능하다.
 			store.dispatch(END);
 			await store.sagaTask.toPromise();
 		}

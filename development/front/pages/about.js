@@ -36,7 +36,8 @@ const About = () => {
 								<br />
 								{userInfo.Followers}
 							</div>,
-						]}>
+						]}
+					>
 						<Card.Meta
 							avatar={<Avatar>{userInfo.nickname[0]}</Avatar>}
 							title={userInfo.nickname}

@@ -1,3 +1,4 @@
+//getStaticProps를 써보기위한 예제 - 없어도 되는 페이지!!!!
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Head from 'next/head';
