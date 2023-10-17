@@ -7,7 +7,7 @@ import Head from 'next/head';
 
 import wrapper from '../../store/configureStore';
 import { loadMyInfo } from '../../reducers/userSlice';
-import { LOAD_POST_REQUEST } from '../../reducers/post';
+import { loadPost } from '../../reducers/postSlice';
 import AppLayout from '../../components/AppLayout';
 import PostCard from '../../components/PostCard';
 

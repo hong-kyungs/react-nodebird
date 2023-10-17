@@ -27,6 +27,16 @@ router.get('/:tag', async (req, res, next) => {
 					model: Image,
 				},
 				{
+					model: Comment,
+					include: [
+						{
+							model: User,
+							attributes: ['id', 'nickname'],
+							order: [['createdAt', 'DESC']],
+						},
+					],
+				},
+				{
 					model: User,
 					through: 'Like',
 					as: 'Likers',

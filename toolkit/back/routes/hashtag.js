@@ -33,6 +33,16 @@ router.get('/:tag', async (req, res, next) => {
 					attributes: ['id'],
 				},
 				{
+					model: Comment,
+					include: [
+						{
+							model: User,
+							attributes: ['id', 'nickname'],
+							order: [['createdAt', 'DESC']],
+						},
+					],
+				},
+				{
 					model: Post,
 					as: 'Retweet',
 					include: [
