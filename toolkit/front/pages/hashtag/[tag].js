@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 
 import axios from 'axios';
 import { LOAD_HASHTAG_POSTS_REQUEST } from '../../reducers/post';
-import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
+import { loadMyInfo } from '../../reducers/userSlice';
 import PostCard from '../../components/PostCard';
 import wrapper from '../../store/configureStore';
 import AppLayout from '../../components/AppLayout';
@@ -25,13 +25,14 @@ const Hashtag = () => {
 				document.documentElement.scrollHeight - 300
 			) {
 				if (hasMorePosts && !loadPostsLoading) {
-					dispatch({
-						type: LOAD_HASHTAG_POSTS_REQUEST,
-						lastId:
-							mainPosts[mainPosts.length - 1] &&
-							mainPosts[mainPosts.length - 1].id,
-						data: tag,
-					});
+					dispatch(
+						loadHashtagPosts({
+							data: tag,
+							lastId:
+								mainPosts[mainPosts.length - 1] &&
+								mainPosts[mainPosts.length - 1].id,
+						})
+					);
 				}
 			}
 		};
@@ -58,13 +59,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			if (req && cookie) {
 				axios.defaults.headers.Cookie = cookie;
 			}
-			store.dispatch({
-				type: LOAD_HASHTAG_POSTS_REQUEST,
-				data: params.tag,
-			});
-			store.dispatch({
-				type: LOAD_MY_INFO_REQUEST,
-			});
+			store.dispatch(loadHashtagPosts({ data: params.tag }));
+			store.dispatch(loadMyInfo());
 			store.dispatch(END);
 			await store.sagaTask.toPromise();
 		}

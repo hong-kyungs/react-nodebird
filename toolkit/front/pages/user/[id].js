@@ -30,10 +30,10 @@ const User = () => {
 				if (hasMorePosts && !loadPostsLoading) {
 					dispatch(
 						loadUserPosts({
+							data: id,
 							lastId:
 								mainPosts[mainPosts.length - 1] &&
 								mainPosts[mainPosts.length - 1].id,
-							id,
 						})
 					);
 				}
@@ -113,7 +113,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			if (req && cookie) {
 				axios.defaults.headers.Cookie = cookie;
 			}
-			store.dispatch(loadUserPosts({ id: params.id }));
+			store.dispatch(loadUserPosts({ data: params.id }));
 			store.dispatch(loadMyInfo());
 			store.dispatch(loadUser(params.id));
 			store.dispatch(END);

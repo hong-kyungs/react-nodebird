@@ -96,6 +96,16 @@ export const loadUserPosts = createAsyncThunk(
 	}
 );
 
+export const loadHashtagPosts = createAsyncThunk(
+	'post/loadHashtagPosts',
+	async (data, lastId) => {
+		const response = await axios.get(
+			`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`
+		);
+		return response.data;
+	}
+);
+
 const postSlice = createSlice({
 	name: 'post',
 	initialState,
@@ -263,6 +273,21 @@ const postSlice = createSlice({
 				state.hasMorePosts = action.payload.length === 10;
 			})
 			.addCase(loadUserPosts.rejected, (state, action) => {
+				state.loadPostsLoading = false;
+				state.loadPostsError = action.error;
+			})
+			.addCase(loadHashtagPosts.pending, (state) => {
+				state.loadPostsLoading = true;
+				state.loadPostsDone = false;
+				state.loadPostsError = null;
+			})
+			.addCase(loadHashtagPosts.fulfilled, (state, action) => {
+				state.loadPostsLoading = false;
+				state.loadPostsDone = true;
+				state.mainPosts = state.mainPosts.concat(action.payload);
+				state.hasMorePosts = action.payload.length === 10;
+			})
+			.addCase(loadHashtagPosts.rejected, (state, action) => {
 				state.loadPostsLoading = false;
 				state.loadPostsError = action.error;
 			}),
