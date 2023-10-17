@@ -134,6 +134,8 @@ function* loadPost(action) {
 }
 
 function loadHashtagPostsAPI(data, lastId) {
+	//data가 한글이나 특수문자면 에러가 발생하므로 data를 encodeURIComponent로 감싸준다.
+	//ex) #리액트 #해시태그
 	return axios.get(
 		`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`
 	);

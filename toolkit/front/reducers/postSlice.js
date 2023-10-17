@@ -86,6 +86,16 @@ export const loadPost = createAsyncThunk('post/loadPost', async (data) => {
 	return response.data;
 });
 
+export const loadUserPosts = createAsyncThunk(
+	'post/loadUserPosts',
+	async (data, lastId) => {
+		const response = await axios.get(
+			`/user/${data}/posts?lastId=${lastId || 0}`
+		);
+		return response.data;
+	}
+);
+
 const postSlice = createSlice({
 	name: 'post',
 	initialState,
@@ -240,6 +250,21 @@ const postSlice = createSlice({
 			.addCase(loadPost.rejected, (state, action) => {
 				state.loadPostLoading = false;
 				state.loadPostError = action.error;
+			})
+			.addCase(loadUserPosts.pending, (state) => {
+				state.loadPostsLoading = true;
+				state.loadPostsDone = false;
+				state.loadPostsError = null;
+			})
+			.addCase(loadUserPosts.fulfilled, (state, action) => {
+				state.loadPostsLoading = false;
+				state.loadPostsDone = true;
+				state.mainPosts = state.mainPosts.concat(action.payload);
+				state.hasMorePosts = action.payload.length === 10;
+			})
+			.addCase(loadUserPosts.rejected, (state, action) => {
+				state.loadPostsLoading = false;
+				state.loadPostsError = action.error;
 			}),
 });
 

@@ -123,6 +123,11 @@ export const removeFollower = createAsyncThunk(
 	}
 );
 
+export const loadUser = createAsyncThunk('user/loadUser', async (data) => {
+	const response = await axios.get(`/user/${data}`);
+	return response.data;
+});
+
 const userSlice = createSlice({
 	name: 'user',
 	initialState,
@@ -282,6 +287,20 @@ const userSlice = createSlice({
 			.addCase(removeFollower.rejected, (state, action) => {
 				state.removeFollowerLoading = false;
 				state.removeFollowerError = action.error;
+			})
+			.addCase(loadUser.pending, (state) => {
+				state.loadUserLoading = true;
+				state.loadUserDone = false;
+				state.loadUserError = null;
+			})
+			.addCase(loadUser.fulfilled, (state, action) => {
+				state.loadUserLoading = false;
+				state.userInfo = action.payload;
+				state.loadUserDone = true;
+			})
+			.addCase(loadUser.rejected, (state, action) => {
+				state.loadUserLoading = false;
+				state.loadUserError = action.error;
 			}),
 });
 

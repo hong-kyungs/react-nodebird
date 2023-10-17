@@ -15,9 +15,13 @@ router.get('/:tag', async (req, res, next) => {
 			where,
 			limit: 10,
 			include: [
+				//게시글 가져오는 부분은 동일하고, hashtag 가져오는 부분에 where을 추가해준다.
+				// hashtag 가져오는 부분에 where을 추가처럼 include안에서도 조건 적용이 가능하다.
 				{
 					model: Hashtag,
+					//사가에서 encode해서 서버로 보내졌고, 서버에서는 decode해서 보내준다.
 					where: { name: decodeURIComponent(req.params.tag) },
+					// posts의 where 와 Hashtag의 where, 모든 조건이 동시에 만족하는 것이 선택된다.
 				},
 				{
 					model: User,

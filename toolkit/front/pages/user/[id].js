@@ -6,8 +6,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import axios from 'axios';
-import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
-import { LOAD_MY_INFO_REQUEST, LOAD_USER_REQUEST } from '../../reducers/user';
+import { loadUserPosts } from '../../reducers/postSlice';
+import { loadMyInfo, loadUser } from '../../reducers/userSlice';
 import PostCard from '../../components/PostCard';
 import wrapper from '../../store/configureStore';
 import AppLayout from '../../components/AppLayout';
@@ -28,13 +28,14 @@ const User = () => {
 				document.documentElement.scrollHeight - 300
 			) {
 				if (hasMorePosts && !loadPostsLoading) {
-					dispatch({
-						type: LOAD_USER_POSTS_REQUEST,
-						lastId:
-							mainPosts[mainPosts.length - 1] &&
-							mainPosts[mainPosts.length - 1].id,
-						data: id,
-					});
+					dispatch(
+						loadUserPosts({
+							lastId:
+								mainPosts[mainPosts.length - 1] &&
+								mainPosts[mainPosts.length - 1].id,
+							id,
+						})
+					);
 				}
 			}
 		};
@@ -89,7 +90,8 @@ const User = () => {
 							<br />
 							{userInfo.Followers}
 						</div>,
-					]}>
+					]}
+				>
 					<Card.Meta
 						avatar={<Avatar>{userInfo.nickname[0]}</Avatar>}
 						title={userInfo.nickname}
@@ -111,17 +113,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			if (req && cookie) {
 				axios.defaults.headers.Cookie = cookie;
 			}
-			store.dispatch({
-				type: LOAD_USER_POSTS_REQUEST,
-				data: params.id,
-			});
-			store.dispatch({
-				type: LOAD_MY_INFO_REQUEST,
-			});
-			store.dispatch({
-				type: LOAD_USER_REQUEST,
-				data: params.id,
-			});
+			store.dispatch(loadUserPosts({ id: params.id }));
+			store.dispatch(loadMyInfo());
+			store.dispatch(loadUser(params.id));
 			store.dispatch(END);
 			await store.sagaTask.toPromise();
 		}
