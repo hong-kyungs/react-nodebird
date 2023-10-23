@@ -4,7 +4,7 @@ import { Card, Avatar, Button } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
 
-import { logOut } from '../reducers/user';
+import { logOut } from '../reducers/userSlice';
 
 const ButtonWrapper = styled(Button)`
 	margin-top: 10px;

@@ -20,7 +20,6 @@ import {
 	likePost,
 	unlikePost,
 	retweet,
-	unlikePost,
 } from '../reducers/postSlice';
 import FollowButton from './FollowButton';
 
@@ -135,7 +134,13 @@ const PostCard = ({ post }) => {
 							{moment(post.createdAt).format('YYYY. MM. DD')}
 						</div>
 						<Card.Meta
-							avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+							avatar={
+								<Link href={`/user/${post.Retweet.User.id}`}>
+									<a>
+										<Avatar>{post.Retweet.User.nickname[0]}</Avatar>
+									</a>
+								</Link>
+							}
 							title={post.Retweet.User.nickname}
 							description={<PostCardContent postData={post.Retweet.content} />}
 						/>

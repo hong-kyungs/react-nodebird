@@ -192,14 +192,14 @@ const userSlice = createSlice({
 				state.unfollowDone = false;
 				state.unfollowError = null;
 			})
-			.addCase(unfollow.pending, (state, action) => {
+			.addCase(unfollow.fulfilled, (state, action) => {
 				state.unfollowLoading = false;
 				state.unfollowDone = true;
 				state.me.Followings = state.me.Followings.filter(
 					(v) => v.id !== action.payload.UserId
 				);
 			})
-			.addCase(unfollow.pending, (state, action) => {
+			.addCase(unfollow.rejected, (state, action) => {
 				state.unfollowLoading = false;
 				state.unfollowError = action.error;
 			})

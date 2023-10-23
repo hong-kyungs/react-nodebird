@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { END } from 'redux-saga';
 import axios from 'axios';
 
 import AppLayout from '../components/AppLayout';
@@ -68,13 +67,16 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			if (req && cookie) {
 				axios.defaults.headers.Cookie = cookie;
 			}
+
 			//화면 초기 로딩
 			//로그인 상태 복구 - 새로고침해도 로그인이 남아있도록
 			store.dispatch(loadMyInfo());
 			//화면 초기 로딩 - 화면을 로딩하면 LOAD_POSTS_REQUEST를  바로 호출해준다.
 			store.dispatch(loadPosts());
+			/*
 			store.dispatch(END); // 1. 위의 두 request(로그인 상태 복구, 화면 초기 로딩)이 success 될떄까지
 			await store.sagaTask.toPromise(); // 2. 기다린다. sagaTask는 store에 등록해둔 store.sagatask
+			*/
 		}
 );
 

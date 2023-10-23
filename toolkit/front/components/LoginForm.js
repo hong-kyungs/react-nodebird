@@ -5,7 +5,7 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import useInput from '../../hooks/useInput';
 
-import { logIn } from '../reducers/user';
+import { logIn } from '../reducers/userSlice';
 
 const ButtonWrapper = styled.div`
 	margin-top: 10px;
