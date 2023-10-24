@@ -5,11 +5,10 @@ import { Checkbox, Form, Input, Button } from 'antd';
 import styled from 'styled-components';
 import Router from 'next/router';
 import axios from 'axios';
-import { END } from 'redux-saga';
 
 import useInput from '../../hooks/useInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { signUp, LOAD_MY_INFO_REQUEST } from '../reducers/userSlice';
+import { signUp, loadMyInfo } from '../reducers/userSlice';
 import wrapper from '../store/configureStore';
 
 const ErrorMessage = styled.div`
@@ -86,7 +85,7 @@ const Signup = () => {
 			return setTermError(true);
 		}
 		console.log(email, nickname, password);
-		dispatch(signUp(email, nickname, password));
+		dispatch(signUp({ email, nickname, password }));
 	}, [email, password, passwordCheck, term]);
 
 	return (
@@ -171,11 +170,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			if (req && cookie) {
 				axios.defaults.headers.Cookie = cookie;
 			}
-			store.dispatch({
-				type: LOAD_MY_INFO_REQUEST,
-			});
-			store.dispatch(END);
-			await store.sagaTask.toPromise();
+			await store.dispatch(loadMyInfo());
+			return {
+				props: {},
+			};
+			// store.dispatch(END);
+			// await store.sagaTask.toPromise();
 		}
 );
 

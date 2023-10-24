@@ -81,10 +81,17 @@ export const unfollow = createAsyncThunk('user/unfollow', async (data) => {
 	return response.data;
 });
 
-export const signUp = createAsyncThunk('user/signUp', async (data) => {
-	const response = await axios.post('/user', data);
-	return response.data;
-});
+export const signUp = createAsyncThunk(
+	'user/signUp',
+	async (data, { rejectWithValue }) => {
+		try {
+			const response = await axios.post('/user', data);
+			return response.data;
+		} catch (err) {
+			return rejectWithValue(err.response.data);
+		}
+	}
+);
 
 export const loadMyInfo = createAsyncThunk('user/loadMyInfo', async () => {
 	const response = await axios.get('/user');
@@ -214,7 +221,7 @@ const userSlice = createSlice({
 			})
 			.addCase(signUp.rejected, (state, action) => {
 				state.signUpLoading = false;
-				state.signUpError = action.error;
+				state.signUpError = action.payload;
 			})
 			.addCase(loadMyInfo.pending, (state) => {
 				state.loadMyInfoLoading = true;
@@ -222,7 +229,7 @@ const userSlice = createSlice({
 				state.loadMyInfoError = null;
 			})
 			.addCase(loadMyInfo.fulfilled, (state, action) => {
-				raft.loadMyInfoLoading = false;
+				state.loadMyInfoLoading = false;
 				state.me = action.payload;
 				state.loadMyInfoDone = true;
 			})
