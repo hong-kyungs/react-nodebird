@@ -83,10 +83,17 @@ export const uploadImages = createAsyncThunk(
 	}
 );
 
-export const retweet = createAsyncThunk('post/retweet', async (data) => {
-	const response = await axios.post(`/post/${data}/retweet`);
-	return response.data;
-});
+export const retweet = createAsyncThunk(
+	'post/retweet',
+	async (data, { rejectWithValue }) => {
+		try {
+			const response = await axios.post(`/post/${data}/retweet`);
+			return response.data;
+		} catch (err) {
+			return rejectWithValue(err.response.data);
+		}
+	}
+);
 
 export const loadPost = createAsyncThunk('post/loadPost', async (data) => {
 	const response = await axios.get(`/post/${data}`);
@@ -252,7 +259,7 @@ const postSlice = createSlice({
 			})
 			.addCase(retweet.rejected, (state, action) => {
 				state.retweetLoading = false;
-				state.retweetError = action.error;
+				state.retweetError = action.payload;
 			})
 			.addCase(loadPost.pending, (state) => {
 				state.loadPostLoading = true;

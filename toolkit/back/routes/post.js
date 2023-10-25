@@ -235,6 +235,11 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
 					attributes: ['id', 'nickname'],
 				},
 				{
+					model: User,
+					as: 'Likers',
+					attributes: ['id'],
+				},
+				{
 					model: Image,
 				},
 				{
@@ -243,11 +248,6 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
 						{
 							model: User,
 							attributes: ['id', 'nickname'],
-						},
-						{
-							model: User,
-							as: 'Likers',
-							attributes: ['id'],
 						},
 					],
 				},
