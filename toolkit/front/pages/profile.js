@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
 import axios from 'axios';
-import { END } from 'redux-saga';
 import useSWR from 'swr';
 
 import AppLayout from '../components/AppLayout';
@@ -91,9 +90,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			if (req && cookie) {
 				axios.defaults.headers.Cookie = cookie;
 			}
-			store.dispatch(loadMyInfo());
-			store.dispatch(END);
-			await store.sagaTask.toPromise();
+			await store.dispatch(loadMyInfo());
+			return {
+				props: {},
+			};
+			// store.dispatch(END);
+			// await store.sagaTask.toPromise();
 		}
 );
 

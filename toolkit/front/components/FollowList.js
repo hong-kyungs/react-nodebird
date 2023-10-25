@@ -49,7 +49,7 @@ const FollowList = ({ header, data, onClickMore, loading }) => {
 //props로 넘겨받는게 있다면 반드시 PropTypes로 점검해주기 - 서비스의 성능이 높아진다.
 FollowList.propTypes = {
 	header: PropTypes.string.isRequired,
-	data: PropTypes.array.isRequired,
+	data: PropTypes.array,
 	onClickMore: PropTypes.func.isRequired,
 	loading: PropTypes.bool.isRequired,
 };

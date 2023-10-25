@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, Card } from 'antd';
-import { END } from 'redux-saga';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -116,8 +115,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			store.dispatch(loadUserPosts({ data: params.id }));
 			store.dispatch(loadMyInfo());
 			store.dispatch(loadUser(params.id));
-			store.dispatch(END);
-			await store.sagaTask.toPromise();
+			// return {
+			// 	props: {},
+			// };
 		}
 );
 

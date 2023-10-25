@@ -61,10 +61,17 @@ const dummyUser = (data) => ({
 	],
 });
 
-export const logIn = createAsyncThunk('user/logIn', async (data) => {
-	const response = await axios.post('/user/login', data);
-	return response.data;
-});
+export const logIn = createAsyncThunk(
+	'user/logIn',
+	async (data, { rejectWithValue }) => {
+		try {
+			const response = await axios.post('/user/login', data);
+			return response.data;
+		} catch (err) {
+			return rejectWithValue(err.response.data);
+		}
+	}
+);
 
 export const logOut = createAsyncThunk('user/logOut', async () => {
 	const response = await axios.post('/user/logout');
@@ -164,7 +171,7 @@ const userSlice = createSlice({
 			})
 			.addCase(logIn.rejected, (state, action) => {
 				state.logInLoading = false;
-				state.logInError = action.error;
+				state.logInError = action.payload;
 			})
 			.addCase(logOut.pending, (state) => {
 				state.logOutLoading = true;
