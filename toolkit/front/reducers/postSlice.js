@@ -44,7 +44,7 @@ export const addPost = createAsyncThunk('post/addPost', async (data) => {
 
 export const removePost = createAsyncThunk('post/removePost', async (data) => {
 	//RemovePostOfMe는 아직 못넣음.
-	const response = await axios.post(`/post/${data}`);
+	const response = await axios.delete(`/post/${data}`);
 	return response.data;
 });
 
@@ -53,10 +53,17 @@ export const loadPosts = createAsyncThunk('post/loadPosts', async (lastId) => {
 	return response.data;
 });
 
-export const addComment = createAsyncThunk('post/addComment', async (data) => {
-	const response = await axios.post(`/post/${data.postId}/comment`, data);
-	return response.data;
-});
+export const addComment = createAsyncThunk(
+	'post/addComment',
+	async (data, { rejectWithValue }) => {
+		try {
+			const response = await axios.post(`/post/${data.postId}/comment`, data);
+			return response.data;
+		} catch (err) {
+			return rejectWithValue(err.response.data);
+		}
+	}
+);
 
 export const likePost = createAsyncThunk('post/likePost', async (data) => {
 	const response = await axios.patch(`/post/${data}/like`);
@@ -120,7 +127,7 @@ const postSlice = createSlice({
 		builder
 			.addCase(HYDRATE, (state, action) => ({
 				...state,
-				...action.payload.user,
+				...action.payload.post,
 			}))
 			.addCase(addPost.pending, (state) => {
 				state.addPostLoading = true;
@@ -183,7 +190,7 @@ const postSlice = createSlice({
 			})
 			.addCase(addComment.rejected, (state, action) => {
 				state.addCommentLoading = false;
-				state.addCommentError = action.error;
+				state.addCommentError = action.payload;
 			})
 			.addCase(likePost.pending, (state) => {
 				state.likePostLoading = true;

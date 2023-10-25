@@ -112,12 +112,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			if (req && cookie) {
 				axios.defaults.headers.Cookie = cookie;
 			}
-			store.dispatch(loadUserPosts({ data: params.id }));
-			store.dispatch(loadMyInfo());
-			store.dispatch(loadUser(params.id));
-			// return {
-			// 	props: {},
-			// };
+			await store.dispatch(loadUserPosts({ data: params.id }));
+			await store.dispatch(loadMyInfo());
+			await store.dispatch(loadUser(params.id));
+			return {
+				props: {},
+			};
 		}
 );
 

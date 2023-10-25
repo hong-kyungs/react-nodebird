@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPost, uploadImages, removeImage } from '../reducers/postSlice';
+import postSlice, { addPost, uploadImages } from '../reducers/postSlice';
 import useInput from '../../hooks/useInput';
 
 const PostForm = () => {
@@ -54,7 +54,7 @@ const PostForm = () => {
 
 	const onRemoveImage = useCallback(
 		(index) => () => {
-			dispatch(removeImage(index));
+			dispatch(postSlice.actions.removeImage(index));
 		},
 		[]
 	);

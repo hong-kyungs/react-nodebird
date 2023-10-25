@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { END } from 'redux-saga';
 import { useRouter } from 'next/router';
 
 import axios from 'axios';
@@ -59,10 +58,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			if (req && cookie) {
 				axios.defaults.headers.Cookie = cookie;
 			}
-			store.dispatch(loadHashtagPosts({ data: params.tag }));
-			store.dispatch(loadMyInfo());
-			store.dispatch(END);
-			await store.sagaTask.toPromise();
+			await store.dispatch(loadHashtagPosts({ data: params.tag }));
+			await store.dispatch(loadMyInfo());
+			return {
+				props: {},
+			};
 		}
 );
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
-import { END } from 'redux-saga';
 import axios from 'axios';
 import Head from 'next/head';
 
@@ -53,10 +52,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			if (req && cookie) {
 				axios.defaults.headers.Cookie = cookie;
 			}
-			store.dispatch(loadMyInfo());
-			store.dispatch(loadPost(params.id)); //params.id로 useRouter의 id에 접근이 가능하다.
-			store.dispatch(END);
-			await store.sagaTask.toPromise();
+			await store.dispatch(loadMyInfo());
+			await store.dispatch(loadPost(params.id)); //params.id로 useRouter의 id에 접근이 가능하다.
+			return {
+				props: {},
+			};
 		}
 );
 
