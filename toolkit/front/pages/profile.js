@@ -68,12 +68,14 @@ const Profile = () => {
 					data={follwingsData}
 					onClickMore={loadMoreFollowings}
 					loading={!follwingsData && !followingError}
+					limit={followingsLimit}
 				/>
 				<FollowList
 					header='팔로워'
 					data={followersData}
 					onClickMore={loadMoreFollowers}
 					loading={!followersData && !followerError}
+					limit={followersLimit}
 				/>
 			</AppLayout>
 		</>

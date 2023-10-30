@@ -4,18 +4,35 @@ import { List, Button, Card } from 'antd';
 import { StopOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { unfollow, removeFollower } from '../reducers/userSlice';
+import useSWR from 'swr';
+import axios from 'axios';
 
-const FollowList = ({ header, data, onClickMore, loading }) => {
+const fetcher = (url) =>
+	axios.get(url, { withCredentials: true }).then((result) => result.data);
+
+const FollowList = ({ header, onClickMore, loading, limit }) => {
 	const dispatch = useDispatch();
 
-	//반복문데 대한 데이터는 함수로 보낼때는 고차함수를 사용, item.id가 id자리에 들어간다.
+	//반복문에 대한 데이터는 함수로 보낼때는 고차함수를 사용, item.id가 id자리에 들어간다.
 	const onCancel = (id) => () => {
 		//팔로잉 카테고리에서 클릭되면 언팔로우, 팔로워에서 클릭되면 팔로워 차단(삭제)
 		if (header === '팔로잉') {
 			dispatch(unfollow(id));
+			followingMutation();
 		}
 		dispatch(removeFollower(id));
+		followerMutation();
 	};
+
+	const { data: followersData, mutate: followerMutation } = useSWR(
+		`http://localhost:3065/user/followers?limit=${limit}`,
+		fetcher
+	);
+	const { data: follwingsData, mutate: followingMutation } = useSWR(
+		`http://localhost:3065/user/followings?limit=${limit}`,
+		fetcher
+	);
+
 	// 편의상 style을 객채로 코딩해서 다시 전체적으로 다시 리렌더링이 되기 때문에,
 	// styled-components나 useMemo로 최적화를 해줘야한다.
 	return (
@@ -32,7 +49,7 @@ const FollowList = ({ header, data, onClickMore, loading }) => {
 				</div>
 			}
 			bordered
-			dataSource={data}
+			dataSource={header === '팔로잉' ? follwingsData : followersData}
 			renderItem={(item) => (
 				<List.Item style={{ marginTop: 20 }}>
 					<Card
