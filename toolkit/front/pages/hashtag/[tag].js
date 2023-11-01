@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 
 import axios from 'axios';
-import { LOAD_HASHTAG_POSTS_REQUEST } from '../../reducers/post';
+import { loadHashtagPosts } from '../../reducers/postSlice';
 import { loadMyInfo } from '../../reducers/userSlice';
 import PostCard from '../../components/PostCard';
 import wrapper from '../../store/configureStore';

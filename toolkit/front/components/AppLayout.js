@@ -66,6 +66,7 @@ const AppLayout = ({ children }) => {
 						</Link>
 					</Menu.Item>
 				</Menu>
+
 				<Row gutter={8}>
 					<Col xs={24} md={6}>
 						{/* me, 내정보가 있으면 UserProfile, 없으면 LoginForm */}

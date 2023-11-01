@@ -2,10 +2,13 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import postSlice, { addPost, uploadImages } from '../reducers/postSlice';
+import { addPostToMe } from '../reducers/userSlice';
 import useInput from '../../hooks/useInput';
 
 const PostForm = () => {
-	const { imagePaths, addPostDone } = useSelector((state) => state.post);
+	const { imagePaths, addPostDone, mainPosts } = useSelector(
+		(state) => state.post
+	);
 	const dispatch = useDispatch();
 	const imageInput = useRef(); // 실제 DOM에 접근하기위해 ref 사용
 
@@ -15,12 +18,6 @@ const PostForm = () => {
 	// }, []);
 	//useInput사용하여 줄여주기
 	const [text, onChangeText, setText] = useInput('');
-
-	useEffect(() => {
-		if (addPostDone) {
-			setText('');
-		}
-	}, [addPostDone]);
 
 	//게시글을 업로드할때 이미지가 있다면 text뿐만 아니라 이미지경로(imagepath)도 같이 업로드해주기
 	//text만 업로드할때는 dispatch(addPost(text)); -> 텍스트와 이미지 업로드로 바꿔주기
@@ -37,6 +34,15 @@ const PostForm = () => {
 		formData.append('content', text);
 		return dispatch(addPost(formData)); // 이미지경로, 텍스트가 합쳐진 formData를 전달
 	}, [text, imagePaths]);
+
+	useEffect(() => {
+		if (addPostDone) {
+			const lastId = mainPosts[0].id;
+			console.log('lastId', lastId);
+			dispatch(addPostToMe(lastId));
+			setText('');
+		}
+	}, [addPostDone]);
 
 	const onClickImageUpload = useCallback(() => {
 		imageInput.current.click();

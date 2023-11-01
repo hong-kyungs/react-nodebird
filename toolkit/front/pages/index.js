@@ -73,6 +73,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			await store.dispatch(loadMyInfo());
 			//화면 초기 로딩 - 화면을 로딩하면 LOAD_POSTS_REQUEST를  바로 호출해준다.
 			await store.dispatch(loadPosts());
+
 			/*
 			store.dispatch(END); // 1. 위의 두 request(로그인 상태 복구, 화면 초기 로딩)이 success 될떄까지
 			await store.sagaTask.toPromise(); // 2. 기다린다. sagaTask는 store에 등록해둔 store.sagatask

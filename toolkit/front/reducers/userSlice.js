@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { HYDRATE } from 'next-redux-wrapper';
+import postSlice, { everyPosts } from './postSlice';
 
 export const initialState = {
 	// isLoggingIn: false, //로그인 시도중
@@ -40,6 +41,9 @@ export const initialState = {
 	removeFollowerLoading: false, //팔로워 차단/삭제 시도중
 	removeFollowerDone: false,
 	removeFollowerError: null,
+	addPostToMeLoading: false, //팔로워 차단/삭제 시도중
+	addPostToMeDone: false,
+	addPostToMeError: null,
 	me: null,
 	userInfo: null,
 };
@@ -137,8 +141,20 @@ export const removeFollower = createAsyncThunk(
 	}
 );
 
-export const loadUser = createAsyncThunk('user/loadUser', async (data) => {
-	const response = await axios.get(`/user/${data}`);
+export const loadUser = createAsyncThunk(
+	'user/loadUser',
+	async (data, { rejectWithValue }) => {
+		try {
+			const response = await axios.get(`/user/${data}`);
+			return response.data;
+		} catch (err) {
+			return rejectWithValue(err.response.data);
+		}
+	}
+);
+
+export const addPostToMe = createAsyncThunk('/user/addPost', async (lastId) => {
+	const response = await axios.patch(`/user/post/${lastId}`);
 	return response.data;
 });
 
@@ -146,9 +162,9 @@ const userSlice = createSlice({
 	name: 'user',
 	initialState,
 	reducers: {
-		addPostToMe(state, action) {
-			state.me.Posts.unshift({ id: action.payload });
-		},
+		// addPostToMe(state, action) {
+		// 	state.me.Posts.unshift({ id: action.payload });
+		// },
 		removePostOfMe(state, action) {
 			state.me.Posts = state.me.Posts.filter((v) => v.id !== action.payload);
 		},
@@ -159,6 +175,20 @@ const userSlice = createSlice({
 				...state,
 				...action.payload.user,
 			}))
+			.addCase(addPostToMe.pending, (state) => {
+				state.addPostToMeLoading = true;
+				state.addPostToMeDone = false;
+				state.addPostToMeError = null;
+			})
+			.addCase(addPostToMe.fulfilled, (state, action) => {
+				state.addPostToMeLoading = false;
+				state.addPostToMeDone = true;
+				state.me.Posts.push({ id: action.payload.PostId });
+			})
+			.addCase(addPostToMe.rejected, (state, action) => {
+				state.addPostToMeLoading = false;
+				state.addPostToMeError = action.payload;
+			})
 			.addCase(logIn.pending, (state) => {
 				state.logInLoading = true;
 				state.logInDone = false;
@@ -314,7 +344,7 @@ const userSlice = createSlice({
 			})
 			.addCase(loadUser.rejected, (state, action) => {
 				state.loadUserLoading = false;
-				state.loadUserError = action.error;
+				state.loadUserError = action.payload;
 			}),
 });
 

@@ -351,4 +351,17 @@ router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => {
 	}
 });
 
+//게시글 작성시 내 정보에 추가하는 라우터
+router.patch('/post/:lastId', isLoggedIn, async (req, res, next) => {
+	try {
+		await Post.findOne({
+			where: { id: req.params.lastId, UserId: req.user.id },
+		});
+		res.json({ PostId: parseInt(req.params.lastId, 10) });
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+});
+
 module.exports = router;

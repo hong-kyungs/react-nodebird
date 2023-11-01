@@ -21,6 +21,7 @@ import {
 	unlikePost,
 	retweet,
 } from '../reducers/postSlice';
+import userSlice from '../reducers/userSlice';
 import FollowButton from './FollowButton';
 
 moment.locale('ko'); // ko로 한글로 바꿔준다
@@ -55,7 +56,11 @@ const PostCard = ({ post }) => {
 		if (!id) {
 			return alert('로그인이 필요합니다.');
 		}
-		return dispatch(removePost(post.id));
+		return (
+			console.log('post.id', post.id),
+			dispatch(removePost(post.id)),
+			dispatch(userSlice.actions.removePostOfMe(post.id))
+		);
 	}, [id]);
 
 	const onRetweet = useCallback(() => {

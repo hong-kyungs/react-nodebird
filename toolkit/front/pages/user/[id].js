@@ -97,9 +97,9 @@ const User = () => {
 					/>
 				</Card>
 			) : null}
-			{mainPosts.map((post) => (
-				<PostCard key={post.id} post={post} />
-			))}
+			{mainPosts
+				? mainPosts.map((post) => <PostCard key={post.id} post={post} />)
+				: null}
 		</AppLayout>
 	);
 };

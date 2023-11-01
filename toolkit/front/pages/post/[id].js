@@ -15,6 +15,10 @@ const Post = () => {
 	const { id } = router.query; // id를 사용해서 게시글을 랜더링한다.
 	const { singlePost } = useSelector((state) => state.post);
 
+	if (!singlePost) {
+		return null;
+	}
+
 	return (
 		<AppLayout>
 			{/* 검색엔진에 최적화되도록 '~의 게시글'이런식으로 title을 넣어주는게 좋다. Head가 검색엔진에 정보 제공 */}

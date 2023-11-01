@@ -109,7 +109,7 @@ export const loadPost = createAsyncThunk(
 
 export const loadUserPosts = createAsyncThunk(
 	'post/loadUserPosts',
-	async (data, lastId) => {
+	async ({ data, lastId }) => {
 		const response = await axios.get(
 			`/user/${data}/posts?lastId=${lastId || 0}`
 		);
@@ -119,7 +119,7 @@ export const loadUserPosts = createAsyncThunk(
 
 export const loadHashtagPosts = createAsyncThunk(
 	'post/loadHashtagPosts',
-	async (data, lastId) => {
+	async ({ data, lastId }) => {
 		const response = await axios.get(
 			`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`
 		);
@@ -283,6 +283,7 @@ const postSlice = createSlice({
 				state.loadPostError = action.payload;
 			})
 			.addCase(loadUserPosts.pending, (state) => {
+				User;
 				state.loadPostsLoading = true;
 				state.loadPostsDone = false;
 				state.loadPostsError = null;
@@ -314,4 +315,5 @@ const postSlice = createSlice({
 			}),
 });
 
+export const everyPosts = (state) => state.post.mainPosts;
 export default postSlice;
