@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { HYDRATE } from 'next-redux-wrapper';
-import postSlice, { everyPosts } from './postSlice';
 
 export const initialState = {
 	// isLoggingIn: false, //로그인 시도중

@@ -21,6 +21,7 @@ const User = () => {
 	const { userInfo } = useSelector((state) => state.user);
 
 	useEffect(() => {
+		console.log('id', id);
 		const onScroll = () => {
 			if (
 				window.scrollY + document.documentElement.clientHeight >

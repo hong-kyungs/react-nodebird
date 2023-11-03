@@ -13,4 +13,18 @@ const rootReducer = combineReducers({
 	post: postSlice.reducer,
 });
 
+// const rootReducer = (state, action) => {
+//   // SSR 작업 수행 시 필요한 코드
+//   if (action.type === HYDRATE) {
+//     return {
+//       ...state,
+//       ...action.payload,
+//     };
+//   }
+//   return combineReducers({
+//     user: userSlice.reducer,
+//    	post: postSlice.reducer,
+//   })(state, action);
+// };
+
 export default rootReducer;

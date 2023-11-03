@@ -283,7 +283,6 @@ const postSlice = createSlice({
 				state.loadPostError = action.payload;
 			})
 			.addCase(loadUserPosts.pending, (state) => {
-				User;
 				state.loadPostsLoading = true;
 				state.loadPostsDone = false;
 				state.loadPostsError = null;
