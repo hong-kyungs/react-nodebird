@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Card, Popover, Button, Avatar, List, Comment } from 'antd';
 import {
@@ -35,6 +35,13 @@ const PostCard = ({ post }) => {
 	//const id = useSelector((state) => state.user.me && state.user.me.id);를 ?.으로 줄여줄 수 있다
 	//state.user.me.id가 있으면 id에 넣어주고, 없으면 undefined로 처리
 	const id = useSelector((state) => state.user.me?.id);
+	const { logOutDone } = useSelector((state) => state.user);
+
+	useEffect(() => {
+		if (logOutDone) {
+			setCommentFormOpened(false);
+		}
+	}, [logOutDone]);
 
 	const onLike = useCallback(() => {
 		if (!id) {
