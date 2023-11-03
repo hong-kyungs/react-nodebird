@@ -109,7 +109,9 @@ const PostCard = ({ post }) => {
 								{/* : 다르면 ? 신고가능 */}
 								{id && post.User.id === id ? (
 									<>
-										<Button>수정</Button>
+										{/* '수정'버튼부분 리트윗 게시글이 아닐때에만 보이도록 설정하기.
+										내 게시글에 보이고, 리트윗에는 안보이도록.*/}
+										{!post.RetweetId && <Button>수정</Button>}
 										<Button
 											type='danger'
 											onClick={onRemovePost}
