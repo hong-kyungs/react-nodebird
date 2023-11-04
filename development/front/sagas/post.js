@@ -34,6 +34,9 @@ import {
 	RETWEET_REQUEST,
 	RETWEET_SUCCESS,
 	RETWEET_FAILURE,
+	UPDATE_POST_REQUEST,
+	UPDATE_POST_SUCCESS,
+	UPDATE_POST_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
@@ -260,6 +263,25 @@ function* addComment(action) {
 	}
 }
 
+function updatePostAPI(data) {
+	return axios.patch(`/post/${data.PostId}`, data);
+}
+function* updatePost(action) {
+	try {
+		const result = yield call(updatePostAPI, action.data);
+		yield put({
+			type: UPDATE_POST_SUCCESS,
+			data: result.data,
+		});
+	} catch (err) {
+		console.error(err);
+		yield put({
+			type: UPDATE_POST_FAILURE,
+			error: err.response.data,
+		});
+	}
+}
+
 function* WatchRetweet() {
 	yield takeLatest(RETWEET_REQUEST, retweet);
 }
@@ -299,6 +321,10 @@ function* WatchAddComment() {
 	yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
 
+function* WatchUpdatePost() {
+	yield takeLatest(UPDATE_POST_REQUEST, updatePost);
+}
+
 export default function* postSaga() {
 	yield all([
 		fork(WatchRetweet),
@@ -312,5 +338,6 @@ export default function* postSaga() {
 		fork(WatchAddPost),
 		fork(WatchRemovePost),
 		fork(WatchAddComment),
+		fork(WatchUpdatePost),
 	]);
 }

@@ -344,4 +344,37 @@ router.delete('/:postId', isLoggedIn, async (req, res, next) => {
 	}
 });
 
+//게시글 수정 라우터
+router.patch('/:postId', isLoggedIn, async (req, res, next) => {
+	// '/' 는 실제로는 '/post'다. // PATCH /post/1
+	try {
+		//1. 게시글을 업데이트하고 - 게시글 수정
+		await Post.update(
+			{ content: req.body.content },
+			{
+				where: { id: req.params.postId, UserId: req.user.id },
+			}
+		);
+		//2.게시글을 찾아서 그 게시글에 setHashtag해야한다. - 해시태그 수정
+		const hashtags = req.body.content.match(/#[^\s#]+/g);
+		const post = await Post.findOne({ where: { id: req.params.postId } });
+		if (hashtags) {
+			const result = await Promise.all(
+				hashtags.map((tag) =>
+					Hashtag.findOrCreate({ where: { name: tag.slice(1).toLowerCase() } })
+				)
+			);
+			//result의 결과가 [[노드, true], [리액트, true]]이라서 배열의 첫번째 노드, 리액트가 추출하기 위해 v[0] 적용
+			await post.setHashtags(result.map((v) => v[0]));
+		}
+		res.json({
+			PostId: parseInt(req.params.postId, 10),
+			content: req.body.content,
+		});
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+});
+
 module.exports = router;

@@ -20,6 +20,7 @@ import {
 	UNLIKE_POST_REQUEST,
 	REMOVE_POST_REQUEST,
 	RETWEET_REQUEST,
+	UPDATE_POST_REQUEST,
 } from '../reducers/post';
 import FollowButton from './FollowButton';
 
@@ -27,8 +28,11 @@ moment.locale('ko'); // ko로 한글로 바꿔준다
 
 const PostCard = ({ post }) => {
 	const dispatch = useDispatch();
-	const { removePostLoading } = useSelector((state) => state.post);
+	const { removePostLoading, updatePostLoading } = useSelector(
+		(state) => state.post
+	);
 	const [commentFormOpened, setCommentFormOpened] = useState(false);
+	const [editMode, setEditMode] = useState(false);
 
 	//옵셔널 체이닝
 	//const id = useSelector((state) => state.user.me && state.user.me.id);를 ?.으로 줄여줄 수 있다
@@ -79,6 +83,28 @@ const PostCard = ({ post }) => {
 
 	const liked = post.Likers.find((v) => v.id === id);
 
+	const onClickUpdate = useCallback(() => {
+		setEditMode(true);
+	}, []);
+
+	const onChangePost = useCallback(
+		(editText) => () => {
+			dispatch({
+				type: UPDATE_POST_REQUEST,
+				data: {
+					PostId: post.id,
+					content: editText,
+				},
+			});
+			setEditMode(false);
+		},
+		[post]
+	);
+
+	const onCancelUpdate = useCallback(() => {
+		setEditMode(false);
+	}, []);
+
 	return (
 		<div style={{ marginBottom: 20 }}>
 			<Card
@@ -109,7 +135,15 @@ const PostCard = ({ post }) => {
 								{/* : 다르면 ? 신고가능 */}
 								{id && post.User.id === id ? (
 									<>
-										<Button>수정</Button>
+										{!post.RetweetId && (
+											<Button
+												type='danger'
+												onClick={onClickUpdate}
+												loading={updatePostLoading}
+											>
+												수정
+											</Button>
+										)}
 										<Button
 											type='danger'
 											onClick={onRemovePost}
@@ -147,7 +181,13 @@ const PostCard = ({ post }) => {
 						<Card.Meta
 							avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
 							title={post.Retweet.User.nickname}
-							description={<PostCardContent postData={post.Retweet.content} />}
+							description={
+								<PostCardContent
+									postData={post.Retweet.content}
+									onChangePost={onChangePost}
+									onCancelUpdate={onCancelUpdate}
+								/>
+							}
 						/>
 					</Card>
 				) : (
@@ -164,7 +204,14 @@ const PostCard = ({ post }) => {
 								</Link>
 							}
 							title={post.User.nickname}
-							description={<PostCardContent postData={post.content} />}
+							description={
+								<PostCardContent
+									postData={post.content}
+									editMode={editMode}
+									onChangePost={onChangePost}
+									onCancelUpdate={onCancelUpdate}
+								/>
+							}
 						/>
 					</>
 				)}

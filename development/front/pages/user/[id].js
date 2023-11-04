@@ -19,7 +19,7 @@ const User = () => {
 	const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
 		(state) => state.post
 	);
-	const { userInfo } = useSelector((state) => state.user);
+	const { userInfo, me } = useSelector((state) => state.user);
 
 	useEffect(() => {
 		const onScroll = () => {
@@ -71,8 +71,9 @@ const User = () => {
 					<meta property='og:url' content={`https://nodebird.com/user/${id}`} />
 				</Head>
 			)}
-			{userInfo ? (
+			{userInfo && userInfo.id !== me?.id ? (
 				<Card
+					style={{ marginBottom: 20 }}
 					actions={[
 						<div key='twit'>
 							짹짹
@@ -89,7 +90,8 @@ const User = () => {
 							<br />
 							{userInfo.Followers}
 						</div>,
-					]}>
+					]}
+				>
 					<Card.Meta
 						avatar={<Avatar>{userInfo.nickname[0]}</Avatar>}
 						title={userInfo.nickname}
